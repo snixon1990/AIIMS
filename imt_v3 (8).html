@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fortescue IMT Framework</title>
+<style>
+:root{--navy:#0d1b2a;--navy2:#122135;--green:#00b140;--teal:#00c4b4;--orange:#e85d00;--amber:#ffb300;--txt:#111111;--txt2:#2d2d2d;--txt3:#555555;--bdr:#e0e4ea;--bdr2:#c8cdd6;--surface:#f4f6f9;--surface2:#eef1f5;--red:#E8192C;--pilbara:#FF6A00;--blue:#1a4a8a;--purple:#5a2a8a;--text:var(--txt);--muted:var(--txt3);--border:var(--bdr);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#fff;color:var(--txt);font-size:13px;}body{background:#fff;color:var(--text);font-size:13px;}
+/* HEADER */
+.hdr{background:#0d1b2a;color:#fff;padding:20px 32px;display:block;border-bottom:3px solid #00b140;position:relative;overflow:hidden;}
+.hdr-title{font-size:28px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:4px;line-height:1.1;}
+.hdr-sub{font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+/* MAIN TABS */
+.mtabs{display:flex;background:#fff;border-bottom:2px solid var(--bdr);overflow-x:auto;padding:0 32px;}
+.mt{flex:1;min-width:100px;padding:11px 10px;text-align:center;cursor:pointer;font-size:11px;font-weight:700;text-transform:uppercase;border:none;background:transparent;color:#7ab8a0;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:Arial,sans-serif;white-space:nowrap;}
+.mt:hover{color:var(--txt);background:var(--surface);}
+.mt.a.p{background:#fff;color:#e85d00;border-bottom-color:#e85d00;}
+.mt.a.g{background:#fff;color:#e85d00;border-bottom-color:#e85d00;}
+.mt.a.r{background:var(--blue);color:#fff;border-bottom-color:var(--blue);}
+.mt.a.c{background:var(--green);color:#fff;border-bottom-color:var(--green);}
+.mt.a.m{background:#1a1a1a;color:#fff;border-bottom-color:#1a1a1a;}
+/* VIEWS */
+.view{display:none;}.view.active{display:block;}
+/* LADDER */
+.ladder{display:flex;background:#0d1b2a;overflow-x:auto;border-bottom:3px solid #00b140;}
+.ls{flex:1;min-width:120px;padding:12px 16px;cursor:pointer;border-right:1px solid #333;transition:background .15s;}
+.ls:last-child{border-right:none;}
+.ls:hover,.ls.a{background:#122135;}
+.ls.a{position:relative;}
+.ls.a::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#d0ede8;z-index:10;}
+.ls-num{font-size:10px;font-weight:700;color:#00b140;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.ls-title{font-size:15px;font-weight:700;color:#ffffff;}
+.ls-sub{font-size:11px;color:rgba(255,255,255,0.55);margin-top:3px;}
+.ls-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;margin-top:4px;}
+.tag-site{background:rgba(255,255,255,0.08);color:#aaa;}
+.tag-imt{background:rgba(74,122,232,0.25);color:#6a9ae8;}
+.tag-cmt{background:rgba(154,90,232,0.25);color:#b888e8;}
+.tag-p{background:rgba(232,25,44,.2);color:#ff6670;}
+.tag-g{background:rgba(255,106,0,.2);color:#ffaa55;}
+.tag-b{background:rgba(255,255,255,.1);color:#aaa;}
+/* PANEL */
+.panel{padding:20px 24px;max-width:960px;}
+.lsec{display:none;}.lsec.active{display:block;}
+/* INFO CARDS */
+.ic{border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;}
+.ic-hdr{padding:11px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:var(--surface);user-select:none;}
+.ic-hdr:hover{background:#efefef;}
+.ic-title{font-size:12px;font-weight:700;}
+.ic-body{display:none;padding:14px;border-top:1px solid var(--border);background:#fff;}
+.ic.open .ic-body{display:block;}
+.chev{font-size:9px;color:#bbb;transition:transform .2s;}
+.ic.open .chev{transform:rotate(180deg);}
+/* STRIP */
+.strip{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+.si{flex:1;min-width:160px;padding:10px 13px;border-right:1px solid var(--border);}
+.si:last-child{border-right:none;}
+.si-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.si-val{font-size:12px;line-height:1.5;}
+/* ROLE GRID */
+.rg{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.rc{border:1px solid var(--bdr);border-radius:6px;overflow:hidden;background:#fff;}
+.rc.cmd{border-left:3px solid;}
+.rc.cmd.p{border-left-color:var(--red);}
+.rc.cmd.g{border-left-color:var(--orange);}
+.rc-hdr{padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:var(--surface);}
+.rc-hdr:hover{background:#efefef;}
+.rc-L{display:flex;align-items:center;gap:8px;}
+.rn{font-size:12px;font-weight:700;}
+.rt{font-size:10px;color:var(--muted);}
+.rb-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:#eee;color:#555;white-space:nowrap;}
+.rc-body{display:none;padding:12px;border-top:1px solid var(--border);}
+.rc-body{display:none;}
+.rc.open .rc-body{display:block;}
+.sec-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:10px 0 5px;}
+.blist{list-style:disc;padding-left:16px;}
+.blist li{font-size:12px;color:#333;padding:2px 0;line-height:1.5;}
+.note{font-size:11px;color:#555;font-style:italic;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:7px 9px;line-height:1.5;}
+.pnote{background:#f0f7ff;border:1px solid #b0d0f0;border-radius:4px;padding:8px 10px;margin-top:8px;font-size:11px;color:#1a3a5a;line-height:1.5;}
+/* SECTION DIVIDER */
+.sdiv{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+.sdiv::after{content:'';flex:1;height:1px;background:var(--border);}
+/* COMMS RULE */
+.cr{background:#fffbea;border:1px solid #e0c840;border-radius:6px;padding:11px 14px;display:flex;gap:10px;margin-bottom:10px;}
+.cr-txt{font-size:12px;color:#333;line-height:1.6;}
+/* TEAMS BOX */
+.tb{margin:6px 0 10px 34px;padding:9px 12px;background:#f0f4ff;border-radius:4px;border:1px solid #c8d8f0;font-size:12px;color:#222;line-height:1.8;}
+.tb-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2a4a8a;margin-bottom:5px;}
+code{background:#e8f0ff;padding:2px 5px;border-radius:3px;font-size:11px;}
+/* DECISION TABLE */
+.dt{width:100%;border-collapse:collapse;font-size:12px;}
+.dt th{text-align:left;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:0 10px 6px 0;border-bottom:1px solid var(--border);}
+.dt td{padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;color:#333;line-height:1.5;}
+.dt tr:last-child td{border-bottom:none;}
+.ap{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;}
+.ap-ic{background:#ffe8ea;color:#a0001a;}
+.ap-s{background:#e8f0ff;color:#1a3a7a;}
+/* REG TABLE */
+.rp{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;}
+.rp-i{background:#ffe8ea;color:#a0001a;}
+.rp-a{background:#fff3cd;color:#7a5500;}
+.rp-n{background:#e8f0ff;color:#1a3a7a;}
+/* LEVEL BADGES */
+.lb{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;margin-bottom:3px;}
+.lb.l1{background:#fff3cd;color:#7a5500;}
+.lb.l2{background:#ffe0b2;color:#7a3000;}
+.lb.l3{background:#ffcccc;color:#8a0000;}
+/* SECURITY */
+.sp{background:#f5f0fa;border:1px solid #c8a8e0;border-radius:6px;padding:14px;margin-bottom:10px;}
+.sp-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5a2a8a;margin-bottom:10px;}
+/* CMT */
+.cp{background:#f8f5ff;border:1px solid #c8b0e8;border-radius:6px;padding:14px;margin-bottom:10px;}
+.cp-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#4a2a7a;margin-bottom:8px;}
+.cp-intro{font-size:12px;color:#333;line-height:1.6;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #d8c8f0;}
+.trig{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:12px;line-height:1.5;}
+.tdot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px;}
+.tdot.o{background:var(--orange);}
+.hstep{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:12px;line-height:1.5;}
+.hnum{background:var(--purple);color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+/* ROLE SHEETS */
+.rs-cats{display:flex;background:#f5f5f5;border-bottom:1px solid var(--border);overflow-x:auto;}
+.rct{padding:10px 14px;cursor:pointer;font-size:11px;font-weight:700;text-transform:uppercase;border:none;background:transparent;color:#7ab8a0;border-bottom:3px solid transparent;white-space:nowrap;font-family:Arial,sans-serif;}
+.rct.a{background:#1a1a1a!important;color:white!important;border-color:#1a1a1a!important;}
+.rscat{display:none;}.rscat.active{display:block;}
+.rs-hdr{padding:14px 24px;border-bottom:1px solid rgba(0,0,0,.08);}
+.rs-hdr.s{background:#f5f5f5;border-left:4px solid #888;}
+.rs-hdr.p{background:rgba(232,25,44,.05);border-left:4px solid var(--red);}
+.rs-hdr.g{background:rgba(255,106,0,.05);border-left:4px solid var(--orange);}
+.rs-hdr.c{background:rgba(90,42,138,.05);border-left:4px solid var(--purple);}
+.rs-hdr-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.rs-hdr-when{font-size:12px;color:#444;line-height:1.5;}
+.rsg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:16px 24px;}
+.rsc{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#fff;cursor:pointer;transition:box-shadow .15s;}
+.rsc:hover{box-shadow:0 2px 10px rgba(0,0,0,.1);}
+.rsc-top{padding:12px 14px;border-bottom:1px solid var(--border);}
+.rsc-scen{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+.rsc-scen.pilbara{color:var(--red);}
+.rsc-scen.gabon{color:var(--orange);}
+.rsc-scen.cmt{color:var(--purple);}
+.rsc-scen.site{color:#555;}
+.rsc-name{font-size:13px;font-weight:700;}
+.rsc-aiims{font-size:11px;color:var(--muted);margin-top:2px;}
+.rsc-bot{padding:8px 14px;background:var(--surface);display:flex;justify-content:space-between;align-items:center;}
+.rsc-resp{font-size:10px;color:var(--muted);}
+.btn-view{font-size:10px;font-weight:700;padding:4px 10px;border-radius:3px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:Arial,sans-serif;}
+/* CHECKLIST */
+.cl-wrap{padding:20px 24px;}
+.cl-intro{font-size:12px;color:#333;line-height:1.6;margin-bottom:16px;background:#f5faf5;border:1px solid #b8d8b8;border-radius:6px;padding:12px 14px;}
+.cl-prog{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:14px;}
+.pb-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.pb-fill{height:100%;background:var(--green);border-radius:4px;transition:width .3s;}
+.cl-sec{margin-bottom:20px;}
+.cl-sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--border);}
+.cl-sec-title{font-size:12px;font-weight:700;}
+.cli{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:5px;margin-bottom:5px;cursor:pointer;background:#fff;}
+.cli:hover{background:var(--surface);}
+.cli.done{background:#f5faf5;border-color:#b8d8b8;}
+.cli.na{opacity:.6;}
+.cbox{width:18px;height:18px;border-radius:3px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;background:#fff;}
+.cli.done .cbox{background:var(--green);border-color:var(--green);color:#fff;}
+.cli.na .cbox{background:#bbb;border-color:#bbb;color:#fff;font-size:9px;}
+.cl-title{font-size:12px;font-weight:600;line-height:1.4;}
+.cl-detail{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.cl-where{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#888;margin-top:3px;}
+.btn-na{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:#fff;color:var(--txt);font-size:13px;}body{background:#fff;color:var(--muted);cursor:pointer;font-family:Arial,sans-serif;flex-shrink:0;margin-top:1px;}
+/* MATRIX */
+.mx-wrap{padding:16px 24px;}
+.mx-intro{font-size:12px;color:#333;line-height:1.6;margin-bottom:14px;background:#f0f4ff;border:1px solid #c0d0f0;border-radius:6px;padding:11px 14px;}
+.sc-tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap;}
+.sct{font-size:11px;font-weight:700;padding:6px 12px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:Arial,sans-serif;color:var(--muted);}
+.sct.a{background:var(--blue);color:#fff;border-color:var(--blue);}
+.sp-page{display:none;}.sp-page.active{display:block;}
+.mx-pg{background:#fff;border:1px solid var(--border);border-radius:6px;padding:24px 28px;max-width:880px;}
+.mx-ph{margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #1a1a1a;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+.mx-ph-title{font-size:16px;font-weight:700;}
+.mx-ph-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.mf{width:100%;border-collapse:collapse;font-size:12px;}
+.mf th{text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 8px;border-bottom:2px solid #1a1a1a;}
+.mf td{padding:6px 8px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+.mf tr.sr td{background:#f0f0f0;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;padding:5px 8px;border-bottom:1px solid #ddd;}
+.mf tr:hover:not(.sr) td{background:#fafafa;}
+.rl{font-weight:700;font-size:12px;}
+.rs{font-size:10px;color:var(--muted);}
+.ni{width:100%;border:none;border-bottom:1px solid var(--border);font-size:12px;font-family:Arial,sans-serif;color:var(--text);outline:none;background:transparent;padding:2px 0;}
+.ni::placeholder{color:#ccc;font-style:italic;}
+.cna{font-size:11px;color:#ccc;font-style:italic;text-align:center;}
+th.cs{color:#fff;padding:6px 8px;}
+th.cs.site{background:#555;}
+th.cs.imt-p{background:var(--red);}
+th.cs.cmt{background:var(--purple);}
+th.cs.imt-g{background:var(--orange);}
+th.cs.imt-s{background:var(--green);}
+.mx-meta table{font-size:11px;color:#555;border-collapse:collapse;}
+.mx-meta td{padding:2px 4px 2px 0;}
+.mf-inp{border:none;border-bottom:1px solid var(--border);font-size:11px;width:140px;font-family:Arial,sans-serif;color:var(--text);outline:none;}
+.nb{font-size:11px;padding:7px 14px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer;font-family:Arial,sans-serif;font-weight:700;}
+.btn-rst{font-size:11px;padding:7px 14px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:Arial,sans-serif;color:var(--muted);}
+.nb-p{font-size:10px;font-weight:700;padding:5px 12px;border-radius:3px;border:none;background:var(--blue);color:#fff;cursor:pointer;font-family:Arial,sans-serif;margin-left:auto;display:block;margin-bottom:10px;}
+.mx-ftr{font-size:10px;color:#bbb;text-align:center;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);}
+.trig-box{border:1px solid var(--border);border-radius:4px;padding:10px 13px;margin-bottom:10px;}
+.trig-box-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.nb-box{border:1px solid var(--border);border-radius:4px;padding:10px 13px;margin-bottom:10px;}
+.nb-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.nb-ta{width:100%;border:none;resize:none;font-size:12px;font-family:Arial,sans-serif;color:var(--text);outline:none;background:transparent;min-height:44px;}
+/* MODAL */
+.mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:16px;}
+.mb.open{display:flex;}
+.mbox{background:#fff;border-radius:8px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+.mhdr{padding:18px 22px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;}
+.mscen{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.mscen.pilbara{color:var(--red);}
+.mscen.gabon{color:var(--orange);}
+.mscen.cmt{color:var(--purple);}
+.mscen.site{color:#555;}
+.mrole{font-size:18px;font-weight:700;margin-top:3px;}
+.maiims{font-size:12px;color:var(--muted);margin-top:2px;}
+.macts{display:flex;gap:8px;margin-top:10px;}
+.btn-cl{font-size:11px;padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:Arial,sans-serif;}
+.btn-pr{font-size:11px;font-weight:700;padding:5px 12px;border-radius:4px;border:none;background:var(--blue);color:#fff;cursor:pointer;font-family:Arial,sans-serif;}
+.mbody{padding:18px 22px;}
+.msec{margin-bottom:15px;}
+.msec-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid var(--border);}
+.mlist{list-style:disc;padding-left:16px;}
+.mlist li{font-size:12px;color:#222;padding:2px 0;line-height:1.5;}
+.mhl{background:#f5f8ff;border:1px solid #c8d8f0;border-radius:5px;padding:10px 12px;font-size:12px;color:#1a3a5a;line-height:1.6;}
+.mhl strong{display:block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2a5a8a;margin-bottom:4px;}
+.mhl.y{background:#fffbea;border-color:#e0c840;}
+.mhl.y strong{color:#7a5c00;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mgrid-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.mgrid-val{font-size:12px;color:#222;line-height:1.5;}
+.signoff{border:1px solid #c8d8e8;border-radius:6px;padding:14px 16px;margin-top:16px;background:#f5f8ff;}
+.signoff-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2a5a8a;margin-bottom:8px;}
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.sig-item-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:5px;}
+.sig-line{border-bottom:1px solid #aaa;min-height:20px;}
+.sig-ftr{font-size:10px;color:#888;margin-top:10px;font-style:italic;}
+/* SCRIBE TEMPLATE */
+.st-box{background:#f5f8ff;border:1px solid #c8d8e8;border-radius:6px;margin-top:10px;}
+.st-hdr{padding:10px 13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
+.st-hdr:hover{background:#eef2fa;}
+.st-body{display:none;padding:13px;border-top:1px solid #dde6f5;}
+.st-box.open .st-body{display:block;}
+.st-sec{margin-bottom:10px;}
+.st-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2a4a8a;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #dde6f5;}
+.st-mono{background:#f5f8ff;border-radius:4px;padding:8px 10px;font-family:monospace;font-size:11px;line-height:2;color:#333;}
+@media print{.hdr,.mtabs,.ladder,.macts{display:none!important;}.mb{position:static;background:none;padding:0;display:block;}.mbox{max-height:none;box-shadow:none;border:none;}.sp-page{display:none!important;}.sp-page.print-target{display:block!important;}}
+
+  .main-tab.home{flex:0;padding:13px 20px;white-space:nowrap;color:#00b050;border-right:1px solid rgba(255,255,255,0.1);letter-spacing:1.5px;}
+  .main-tab.active.home{background:rgba(0,176,80,0.15);border-bottom-color:#00b050;color:#00b050;}
+
+.mt.home{flex:0;padding:13px 20px;white-space:nowrap;color:#00b140;border-right:1px solid var(--bdr);letter-spacing:1.5px;}
+.mt.a.home{background:var(--surface);border-bottom-color:#00b140;color:#00b140;}
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+
+
+  select { -webkit-appearance: none; appearance: none; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+
+  /* AIIMS COLOUR CODING */
+  .rc.aiims-ic { border-left: 5px solid #bbb; }
+  .rc.aiims-ic .rc-hdr { background: #fafafa; }
+  .rc.aiims-command { border-left: 5px solid #5ba3d9; }
+  .rc.aiims-command .rc-hdr { background: rgba(91,163,217,0.07); }
+  .rc.aiims-ops { border-left: 5px solid #2e7d32; }
+  .rc.aiims-ops .rc-hdr { background: rgba(46,125,50,0.06); }
+  .rc.aiims-planning { border-left: 5px solid #1a4a8a; }
+  .rc.aiims-planning .rc-hdr { background: rgba(26,74,138,0.06); }
+  .rc.aiims-logistics { border-left: 5px solid #f9a825; }
+  .rc.aiims-logistics .rc-hdr { background: rgba(249,168,37,0.07); }
+  .rc.aiims-welfare { border-left: 5px solid #c62828; }
+  .rc.aiims-welfare .rc-hdr { background: rgba(198,40,40,0.06); }
+  .rc.aiims-site { border-left: 5px solid #FF6A00; }
+  .rc.aiims-site .rc-hdr { background: rgba(255,106,0,0.06); }
+  .rc.aiims-cmt { border-left: 5px solid #5a2a8a; }
+  .rc.aiims-cmt .rc-hdr { background: rgba(90,42,138,0.06); }
+
+
+  .rsc.aiims-ic { border-left: 4px solid #bbb; }
+  .rsc.aiims-command { border-left: 4px solid #5ba3d9; }
+  .rsc.aiims-ops { border-left: 4px solid #2e7d32; }
+  .rsc.aiims-planning { border-left: 4px solid #1a4a8a; }
+  .rsc.aiims-logistics { border-left: 4px solid #f9a825; }
+  .rsc.aiims-welfare { border-left: 4px solid #c62828; }
+  .rsc.aiims-site { border-left: 4px solid #FF6A00; }
+  .rsc.aiims-cmt { border-left: 4px solid #5a2a8a; }
+
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(0,196,180,0.06),transparent 70%);pointer-events:none;"></div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <div style="position:relative;width:36px;height:36px;flex-shrink:0;">
+      <div style="position:absolute;inset:3px;border:7px solid #00b140;border-radius:50%;box-shadow:0 0 10px 4px rgba(0,177,64,0.7),0 0 24px 8px rgba(0,177,64,0.35);"></div>
+    </div>
+    <span style="font-size:15px;font-weight:700;letter-spacing:2px;color:#fff;">FORTESCUE.</span>
+  </div>
+  <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#00b140;margin-bottom:5px;">Group Health, Safety &amp; Emergency Management</div>
+  <div class="hdr-title">INCIDENT <span style="background:linear-gradient(90deg,#ffcc00,#e85d00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">MANAGEMENT</span> FRAMEWORK</div>
+  <div class="hdr-sub">AIIMS-BASED &nbsp;&middot;&nbsp; PERTH GROUP OFFICE &nbsp;&middot;&nbsp; HS&amp;EM</div>
+</div><div class="hdr-sub">GROUP HEALTH, SAFETY &amp; EMERGENCY MANAGEMENT &nbsp;&middot;&nbsp; AIIMS-BASED &nbsp;&middot;&nbsp; PERTH GROUP OFFICE &nbsp;|&nbsp; </div></div>
+  <div style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:3px;background:#00b050;color:#fff;">HS&amp;EM</div>
+</div>
+<div class="mtabs"><button class="mt a home" onclick="switchMain(this,'home')"><span style="font-size:22px;vertical-align:middle;margin-right:5px;line-height:1;">&#8962;</span>HOME</button>
+  <button class="mt a p" onclick="switchMain(this,'pilbara')">Pilbara</button>
+  <button class="mt" onclick="switchMain(this,'gabon')">Global / Gabon</button>
+  <button class="mt" onclick="switchMain(this,'roles')">Role Sheets</button>
+  <button class="mt" onclick="switchMain(this,'checklist')">Readiness Checklist</button>
+  <button class="mt" onclick="switchMain(this,'matrix')">Activation Matrix</button>
+</div>
+
+<!-- PILBARA VIEW -->
+<div class="view active" id="view-home">
+<div style="padding:40px 32px;max-width:1200px;margin:0 auto;">
+
+  <div style="margin-bottom:32px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#00b140;margin-bottom:8px;">Fortescue Group HS&amp;EM</div>
+    <div style="font-size:24px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Incident Management Framework</div>
+    <div style="font-size:13px;color:#555;line-height:1.6;max-width:520px;">Three levels of response. Select the level that matches your incident to see who does what, when to escalate, and what the legal obligations are.</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;align-items:stretch;">
+
+    <!-- LEVEL 1 -->
+    <div style="border:1px solid #e0e4ea;border-left:4px solid #888;border-radius:8px;padding:20px;background:white;display:flex;flex-direction:column;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:6px;">Level 1</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Site Response</div>
+      <div style="font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;">Managed on site. Wardens and emergency response teams handle the incident without Group IMT involvement.</div>
+      <div style="font-size:11px;color:#444;background:#f5f5f5;border-radius:4px;padding:7px 10px;margin-bottom:10px;"><strong>When:</strong> Incident is contained at site level.</div>
+      <div style="flex:1;"></div>
+      <div style="padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:8px;">Select scenario</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="goToLevel('pilbara','site')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#E8192C;color:white;">Pilbara</button>
+          <button onclick="goToLevel('gabon','monitoring')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#FF6A00;color:white;">Global / Gabon</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 2 -->
+    <div style="border:1px solid rgba(232,25,44,0.25);border-left:4px solid #E8192C;border-radius:8px;padding:20px;background:white;display:flex;flex-direction:column;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#E8192C;margin-bottom:6px;">Level 2</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Group IMT</div>
+      <div style="font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;">Perth-based IMT activates. Manages the response when site cannot contain the incident or there is business impact.</div>
+      <div style="font-size:11px;color:#444;background:#fff5f5;border-radius:4px;padding:7px 10px;margin-bottom:10px;"><strong>When:</strong> Site cannot contain it, or there is business or reputational impact.</div>
+      <div style="flex:1;"></div>
+      <div style="padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:8px;">Select scenario</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="goToLevel('pilbara','imt')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#E8192C;color:white;">Pilbara</button>
+          <button onclick="goToLevel('gabon','imt')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#FF6A00;color:white;">Global / Gabon</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL 3 -->
+    <div style="border:1px solid rgba(90,42,138,0.25);border-left:4px solid #5a2a8a;border-radius:8px;padding:20px;background:white;display:flex;flex-direction:column;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5a2a8a;margin-bottom:6px;">Level 3</div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Crisis Management Team</div>
+      <div style="font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;">Executive layer above the IMT. Handles strategic decisions, Board and government engagement.</div>
+      <div style="font-size:11px;color:#444;background:#f8f5ff;border-radius:4px;padding:7px 10px;margin-bottom:10px;"><strong>When:</strong> Fatality, ASX threshold, major media, or government engagement required.</div>
+      <div style="flex:1;"></div>
+      <div style="padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-bottom:8px;">Select scenario</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="goToLevel('pilbara','cmt')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#E8192C;color:white;">Pilbara CMT</button>
+          <button onclick="goToLevel('gabon','cmt')" style="flex:1;padding:9px 12px;border-radius:5px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-size:11px;font-weight:700;background:#FF6A00;color:white;">Global CMT</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:12px;padding-top:8px;border-top:1px solid #e8e8e8;">Tools and Resources</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+    <button onclick="switchMain(this,'roles')" style="padding:18px 16px;border:2px solid #1a4a8a;border-radius:8px;background:white;cursor:pointer;font-family:Arial,sans-serif;text-align:left;transition:all 0.15s;" onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background='white'">
+      <div style="font-size:13px;font-weight:700;color:#1a4a8a;margin-bottom:4px;">Individual Role Sheets</div>
+      <div style="font-size:11px;color:#555;line-height:1.5;">One sheet per person. Print and send before an incident so everyone knows their role.</div>
+    </button>
+    <button onclick="switchMain(this,'matrix')" style="padding:18px 16px;border:2px solid #2e7d32;border-radius:8px;background:white;cursor:pointer;font-family:Arial,sans-serif;text-align:left;transition:all 0.15s;" onmouseover="this.style.background='#f0faf0'" onmouseout="this.style.background='white'">
+      <div style="font-size:13px;font-weight:700;color:#2e7d32;margin-bottom:4px;">Activation Matrix</div>
+      <div style="font-size:11px;color:#555;line-height:1.5;">Enter names for each role across 6 activation scenarios. Print the right one when you need it.</div>
+    </button>
+    <button onclick="switchMain(this,'checklist')" style="padding:18px 16px;border:2px solid #b37a00;border-radius:8px;background:white;cursor:pointer;font-family:Arial,sans-serif;text-align:left;transition:all 0.15s;" onmouseover="this.style.background='#fffbf0'" onmouseout="this.style.background='white'">
+      <div style="font-size:13px;font-weight:700;color:#b37a00;margin-bottom:4px;">Readiness Checklist</div>
+      <div style="font-size:11px;color:#555;line-height:1.5;">Pre-incident checks every IMT member must complete. Phone number, kit location, Teams access.</div>
+    </button>
+  </div>
+
+</div>
+</div>
+
+<div class="view" id="view-pilbara">
+<div class="ladder">
+  <div class="ls a" onclick="showLvl('p','site',this)"><div class="ls-num">Level 1</div><div class="ls-title">Site Response</div><div class="ls-sub">Operational sites</div><span class="ls-tag tag-p">Site-managed</span></div>
+  <div style="color:#00c4b4;font-size:16px;display:flex;align-items:center;padding:0 4px;opacity:0.7;">&#9654;</div>
+  <div class="ls" onclick="showLvl('p','imt',this)"><div class="ls-num">Level 2</div><div class="ls-title">Group IMT</div><div class="ls-sub">Perth Group Office</div><span class="ls-tag tag-p">Group IMT</span></div>
+  <div style="color:#00c4b4;font-size:16px;display:flex;align-items:center;padding:0 4px;opacity:0.7;">&#9654;</div>
+  <div class="ls" onclick="showLvl('p','cmt',this)"><div class="ls-num">Level 3</div><div class="ls-title">Crisis Management Team</div><div class="ls-sub">Executive / strategic</div><span class="ls-tag tag-b">Above IMT</span></div>
+</div>
+<div class="panel">
+  <div class="lsec active" id="p-site">
+    <div class="sdiv">Level 1 - Site Response</div>
+    <div class="strip">
+      <div class="si"><div class="si-lbl">Who activates</div><div class="si-val">Site Emergency Warden or Site Manager</div></div>
+      <div class="si"><div class="si-lbl">When</div><div class="si-val">Any incident manageable entirely on site without Group involvement</div></div>
+      <div class="si"><div class="si-lbl">Escalates to Group IMT when</div><div class="si-val">Cannot be managed at site, or has actual/potential business impact</div></div>
+    </div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#9432; What happens at site level</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><ul class="blist"><li>Site IC manages response and reports to Group IMT if escalation occurs</li><li>Belinga Monitoring Centre provides situational feed during active incidents</li><li>Site-level regulatory notifications (WorkSafe WA) may still be required at this level</li><li>Group HS&EM notified of all significant site incidents regardless of escalation</li></ul></div></div>
+  </div>
+
+  <div class="lsec" id="p-imt">
+    <div class="sdiv">Level 2 - Group IMT (Perth)</div>
+    <div class="cr"><div style="font-size:18px;">&#128172;</div><div class="cr-txt"><strong>All information through the IMT Teams channel only.</strong> No side conversations, no personal messaging apps. Teams channel and Scribe log are the single source of truth.</div></div>
+    <div class="tb"><div class="tb-lbl">Teams Channel Naming</div>Format: <code>IMT-[001]-[Location]-[DDMMYY]</code> &nbsp; e.g. <code style="background:#ffe8ea;">IMT-001-Pilbara-290426</code> &nbsp; CMT: <code style="background:#f5f0fa;">CMT-001-Pilbara-290426</code><br>IC names the channel on activation. Scribe adds all members immediately. Sequence number matches Noggin log.</div>
+    <div class="strip">
+      <div class="si"><div class="si-lbl">How you are notified</div><div class="si-val"><strong>Text + phone call + email</strong> simultaneously. Respond as quickly as you can.</div></div>
+      <div class="si"><div class="si-lbl">Where to go</div><div class="si-val"><strong>Tea Tree, Level 1</strong> - Perth Group Office. IMT kit with reference materials held there.</div></div>
+      <div class="si"><div class="si-lbl">Phone</div><div class="si-val">Phone on loud at all times for the duration of your assignment.</div></div>
+    </div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#9878; Regulatory and Legal Obligations</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><table class="dt"><thead><tr><th>Obligation</th><th>Trigger</th><th>Timing</th><th>Who</th></tr></thead><tbody>
+    <tr><td><strong>WorkSafe WA</strong></td><td>Serious injury, fatality, dangerous incident</td><td><span class="rp rp-i">Immediately</span></td><td>IC</td></tr>
+    <tr><td><strong>DMIRS</strong></td><td>Significant mining incident</td><td><span class="rp rp-i">Immediately</span></td><td>IC + Liaison</td></tr>
+    <tr><td><strong>EPA / DWER</strong></td><td>Environmental spill or release</td><td><span class="rp rp-a">As soon as practicable</span></td><td>IC + Liaison</td></tr>
+    <tr><td><strong>ASX disclosure</strong></td><td>Material to market position</td><td><span class="rp rp-a">Within 24 hours</span></td><td>IC escalates to CMT</td></tr>
+    <tr><td><strong>Evidence preservation</strong></td><td>All serious incidents</td><td><span class="rp rp-i">Immediately</span></td><td>All IMT</td></tr>
+    </tbody></table><p style="font-size:11px;color:#666;margin-top:8px;font-style:italic;">Do not move or alter anything at the scene without IC approval. The Scribe log is a legal document.</p></div></div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#128273; Decision-Making Authority</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><table class="dt"><thead><tr><th style="width:45%">Decision</th><th>Authority</th></tr></thead><tbody>
+    <tr><td>Declare / stand down the IMT</td><td><span class="ap ap-ic">IC only</span></td></tr>
+    <tr><td>Approve the Incident Action Plan</td><td><span class="ap ap-ic">IC only</span></td></tr>
+    <tr><td>Halt operations on safety grounds</td><td><span class="ap ap-ic">Safety Officer (independent)</span></td></tr>
+    <tr><td>Release any public statement</td><td><span class="ap ap-ic">IC must approve first</span></td></tr>
+    <tr><td>Notify WorkSafe WA / DMIRS</td><td><span class="ap ap-ic">IC</span></td></tr>
+    <tr><td>Emergency expenditure</td><td><span class="ap ap-s">Logistics Chief (within delegation)</span></td></tr>
+    <tr><td>Escalate to CMT</td><td><span class="ap ap-ic">IC decides - any member can recommend</span></td></tr>
+    </tbody></table></div></div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#128203; Identification and Classification</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body">
+      <div class="lb l1">Level 1</div><p class="level-desc" style="font-size:12px;color:#333;margin-bottom:8px;"> Site-managed. No Group IMT required.</p>
+      <div class="lb l2">Level 2</div><p class="level-desc" style="font-size:12px;color:#333;margin-bottom:8px;"> Group IMT activates. Incident has or may have business impact.</p>
+      <div class="lb l3">Level 3</div><p class="level-desc" style="font-size:12px;color:#333;margin-bottom:10px;"> CMT activates above the IMT. Strategic/multi-site impact. IMT continues operating.</p>
+      <p style="font-size:12px;color:#555;"><strong>In the room:</strong> Personnel identified by name and role at Tea Tree Level 1. No lanyards or tabards. IMT kit holds reference materials and templates.</p>
+    </div></div>
+    <div class="sdiv">IMT Roles</div>
+    <div class="rg" id="rg-pilbara"></div>
+  </div>
+
+  <div class="lsec" id="p-cmt">
+    <div class="sdiv">Level 3 - Crisis Management Team</div>
+    <div class="strip">
+      <div class="si"><div class="si-lbl">Who activates</div><div class="si-val">IC recommends. Any IMT member can raise the flag.</div></div>
+      <div class="si"><div class="si-lbl">Notification</div><div class="si-val">Text, phone, and email to CMT members simultaneously</div></div>
+      <div class="si"><div class="si-lbl">IMT continues</div><div class="si-val">CMT does not replace the IMT. IC reports to CMT Chair. Operational control stays with IMT.</div></div>
+    </div>
+    <div class="cp"><div class="cp-lbl">When to activate the CMT</div>
+    <div class="trig"><div class="tdot"></div><div>Fatality or multiple serious injuries</div></div>
+    <div class="trig"><div class="tdot"></div><div>Significant environmental release triggering regulator notification</div></div>
+    <div class="trig"><div class="tdot"></div><div>ASX material disclosure threshold reached</div></div>
+    <div class="trig"><div class="tdot"></div><div>Significant or likely media and reputational exposure</div></div>
+    <div class="trig"><div class="tdot"></div><div>Multi-site or production-impacting event</div></div>
+    <div class="trig"><div class="tdot"></div><div>Government or ministerial engagement required</div></div>
+    <div class="trig"><div class="tdot"></div><div>Spend or resource authority exceeds IMT delegation</div></div>
+    </div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#128260; How escalation works</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body">
+    <div class="hstep"><div class="hnum">1</div><div>IC recommends CMT activation. Any IMT member can flag the need.</div></div>
+    <div class="hstep"><div class="hnum">2</div><div>CMT notified via text, phone, email. Assembles at Tea Tree Level 1 or joins IMT Teams channel.</div></div>
+    <div class="hstep"><div class="hnum">3</div><div>IMT continues operating. CMT does not take over the room.</div></div>
+    <div class="hstep"><div class="hnum">4</div><div>CMT handles Board/government engagement, ASX notifications, decisions above IMT delegation.</div></div>
+    <div class="hstep"><div class="hnum">5</div><div>IC briefs CMT at regular intervals using the Incident Action Plan and situation reports.</div></div>
+    <p style="font-size:12px;color:#333;margin-top:10px;"><strong>CMT composition:</strong> CEO or delegate, CFO, General Counsel, CPO, and relevant Group GM. Confirmed on activation.</p>
+    </div></div>
+  </div>
+</div>
+</div>
+
+<!-- GABON VIEW -->
+<div class="view" id="view-gabon">
+<div class="ladder">
+  <div class="ls a" onclick="showLvl('g','mon',this)"><div class="ls-num">In-Country</div><div class="ls-title">Libreville Monitoring</div><div class="ls-sub">Belinga / Gabon site</div><span class="ls-tag tag-g">In-country</span></div>
+  <div style="color:#00c4b4;font-size:16px;display:flex;align-items:center;padding:0 4px;opacity:0.7;">&#9654;</div>
+  <div class="ls" onclick="showLvl('g','imt',this)"><div class="ls-num">Level 2</div><div class="ls-title">Group IMT</div><div class="ls-sub">Perth Group Office</div><span class="ls-tag tag-g">Group IMT</span></div>
+  <div style="color:#00c4b4;font-size:16px;display:flex;align-items:center;padding:0 4px;opacity:0.7;">&#9654;</div>
+  <div class="ls" onclick="showLvl('g','cmt',this)"><div class="ls-num">Level 3</div><div class="ls-title">Crisis Management Team</div><div class="ls-sub">Executive / Board</div><span class="ls-tag tag-b">Above IMT</span></div>
+</div>
+<div class="panel">
+  <div class="lsec active" id="g-mon">
+    <div class="sdiv">In-Country - Libreville Monitoring Centre</div>
+    <div class="strip">
+      <div class="si"><div class="si-lbl">Role</div><div class="si-val">First point of contact for all incidents involving Fortescue personnel in Gabon</div></div>
+      <div class="si"><div class="si-lbl">Escalates when</div><div class="si-val">Incident involves injury, security threat, evacuation, or any business or personnel impact</div></div>
+      <div class="si"><div class="si-lbl">In-country lead</div><div class="si-val">Designated within travelling party before departure. Primary contact for Perth IMT.</div></div>
+    </div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#9432; Pre-travel requirements</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><ul class="blist">
+      <li>All travellers have downloaded the <strong>Crisis24</strong> app before departure</li>
+      <li>All travellers registered on DFAT Smartraveller before departure</li>
+      <li>Travel risk assessment completed by HS&EM (Safety Officer)</li>
+      <li>Travel insurance and medical assistance provider confirmed</li>
+      <li>In-country lead designated within the travelling party</li>
+      <li>DFAT Crisis Centre number saved: <strong>1300 555 135</strong></li>
+      <li>Corporate Security duty phone saved: <strong>0458 458 158</strong></li>
+      <li>Emergency duty phone saved: <strong>[Emergency Duty Phone]</strong></li>
+      <li>Australian Embassy Gabon contact details confirmed with Liaison Officer</li>
+    </ul></div></div>
+  </div>
+
+  <div class="lsec" id="g-imt">
+    <div class="sdiv">Level 2 - Group IMT (Perth)</div>
+    <div class="cr"><div style="font-size:18px;">&#128172;</div><div class="cr-txt"><strong>All information through the IMT Teams channel only.</strong> No side conversations. In-country contacts in Libreville will also be linked in.</div></div>
+    <div class="tb"><div class="tb-lbl">Teams Channel Naming</div>Format: <code>IMT-[001]-[Location]-[DDMMYY]</code> &nbsp; e.g. <code style="background:#fff3e0;">IMT-001-Gabon-290426</code> &nbsp; CMT: <code style="background:#f5f0fa;">CMT-001-Gabon-290426</code><br>IC names the channel on activation. Scribe adds all members immediately. Sequence number matches Noggin log.</div>
+    <div class="sp"><div class="sp-lbl">&#128274; Corporate Security and Intelligence - Global Incidents (Mandatory)</div>
+    <div class="strip" style="border:none;margin:0;">
+      <div class="si" style="border-right:1px solid var(--border);"><div class="si-lbl">Who</div><div class="si-val">Corporate Security and Intelligence team. Activates on all global incidents - not optional.<br><strong>Duty phone: <a href="tel:0458458158">0458 458 158</a></strong> - save this number now.</div></div>
+      <div class="si" style="border-right:1px solid var(--border);"><div class="si-lbl">What they provide</div><div class="si-val">Geopolitical risk, real-time security intelligence, threat analysis, safe movement and extraction guidance.</div></div>
+      <div class="si"><div class="si-lbl">NDA requirement</div><div class="si-val">For sensitive security intelligence, IMT members may be required to sign an NDA before receiving classified briefings. Coordinated by Legal.</div></div>
+    </div></div>
+    <div class="strip" style="margin-top:10px;">
+      <div class="si"><div class="si-lbl">How you are notified</div><div class="si-val"><strong>Text + phone call + email</strong> simultaneously. Respond as quickly as you can.</div></div>
+      <div class="si"><div class="si-lbl">Where to go</div><div class="si-val"><strong>Tea Tree, Level 1</strong> - Perth Group Office. International incidents may span time zones.</div></div>
+      <div class="si"><div class="si-lbl">Phone</div><div class="si-val">Phone on loud at all times. May be activated at any hour.</div></div>
+    </div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#9878; Regulatory and Legal Obligations</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><table class="dt"><thead><tr><th>Obligation</th><th>Trigger</th><th>Timing</th><th>Who</th></tr></thead><tbody>
+    <tr><td><strong>WHS duty of care</strong></td><td>Any harm to travelling Fortescue personnel</td><td><span class="rp rp-i">Immediately</span></td><td>IC</td></tr>
+    <tr><td><strong>DFAT notification</strong></td><td>Australian nationals in distress overseas</td><td><span class="rp rp-i">Immediately</span></td><td>Liaison Officer</td></tr>
+    <tr><td><strong>ASX disclosure</strong></td><td>Material to market position - executive-level event</td><td><span class="rp rp-a">Within 24 hours</span></td><td>IC escalates to CMT</td></tr>
+    <tr><td><strong>Next of kin notification</strong></td><td>Injury, fatality or serious welfare event</td><td><span class="rp rp-i">Before any media</span></td><td>IC authorises, P&C delivers</td></tr>
+    <tr><td><strong>Privacy Act</strong></td><td>All personnel and medical details</td><td><span class="rp rp-n">Ongoing</span></td><td>All IMT</td></tr>
+    </tbody></table></div></div>
+    <div class="ic"><div class="ic-hdr" onclick="tog(this)"><div class="ic-title">&#128273; Decision-Making Authority</div><span class="chev">&#9660;</span></div>
+    <div class="ic-body"><table class="dt"><thead><tr><th style="width:45%">Decision</th><th>Authority</th></tr></thead><tbody>
+    <tr><td>Declare / stand down the IMT</td><td><span class="ap ap-ic">IC only</span></td></tr>
+    <tr><td>Order evacuation or shelter in place</td><td><span class="ap ap-ic">IC - consults Ops and in-country lead</span></td></tr>
+    <tr><td>Authorise medical evacuation (medevac)</td><td><span class="ap ap-ic">IC authorises, Logistics arranges</span></td></tr>
+    <tr><td>Release any public statement</td><td><span class="ap ap-ic">IC must approve first</span></td></tr>
+    <tr><td>Notify next of kin</td><td><span class="ap ap-ic">IC authorises, P&C delivers</span></td></tr>
+    <tr><td>Contact DFAT / Embassy</td><td><span class="ap ap-s">Liaison Officer initiates</span></td></tr>
+    <tr><td>Emergency expenditure (incl. medevac)</td><td><span class="ap ap-s">Logistics Chief within delegation</span></td></tr>
+    <tr><td>Escalate to CMT / Board</td><td><span class="ap ap-ic">IC - any member can recommend</span></td></tr>
+    </tbody></table></div></div>
+    <div class="sdiv">IMT Roles</div>
+    <div class="rg" id="rg-gabon"></div>
+  </div>
+
+  <div class="lsec" id="g-cmt">
+    <div class="sdiv">Level 3 - Crisis Management Team</div>
+    <div class="strip">
+      <div class="si"><div class="si-lbl">Who activates</div><div class="si-val">IC recommends. Any IMT member can raise the flag.</div></div>
+      <div class="si"><div class="si-lbl">Notification</div><div class="si-val">Text, phone, and email to CMT members</div></div>
+      <div class="si"><div class="si-lbl">IMT continues</div><div class="si-val">CMT does not replace the IMT. IC reports to CMT Chair.</div></div>
+    </div>
+    <div class="cp"><div class="cp-lbl">When to activate the CMT - global triggers</div>
+    <div class="trig"><div class="tdot o"></div><div>Fatality or life-threatening injury to a travelling executive</div></div>
+    <div class="trig"><div class="tdot o"></div><div>ASX material disclosure threshold reached</div></div>
+    <div class="trig"><div class="tdot o"></div><div>Significant media exposure - executive profile incident</div></div>
+    <div class="trig"><div class="tdot o"></div><div>Board notification required</div></div>
+    <div class="trig"><div class="tdot o"></div><div>Spend or medevac authority exceeds IMT delegation</div></div>
+    <div class="trig"><div class="tdot o"></div><div>Geopolitical escalation requiring sovereign-level engagement</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ROLE SHEETS VIEW -->
+<div class="view" id="view-roles">
+<div style="background:#f8f8f8;border-bottom:2px solid #e0e0e0;padding:14px 24px;">
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <button class="rct a" onclick="showRsCat(this,'site')" data-color="#555" style="flex:1;padding:12px 10px;border-radius:6px;border:2px solid #888;background:white;color:#555;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Site EM</div>
+    </button>
+    <button class="rct" onclick="showRsCat(this,'imt-pilbara')" data-color="#E8192C" style="flex:1;padding:12px 10px;border-radius:6px;border:2px solid #E8192C;background:white;color:#E8192C;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">IMT Pilbara</div>
+    </button>
+    <button class="rct" onclick="showRsCat(this,'imt-global')" data-color="#FF6A00" style="flex:1;padding:12px 10px;border-radius:6px;border:2px solid #FF6A00;background:white;color:#FF6A00;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">IMT Global</div>
+    </button>
+    <button class="rct" onclick="showRsCat(this,'cmt')" data-color="#5a2a8a" style="flex:1;padding:12px 10px;border-radius:6px;border:2px solid #5a2a8a;background:white;color:#5a2a8a;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">CMT</div>
+    </button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+    <span style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-right:4px;">AIIMS Colour Key:</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#FF6A00;display:inline-block;"></span>Site EM</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#bbb;display:inline-block;"></span>Incident Controller</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#5ba3d9;display:inline-block;"></span>Command Staff</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#2e7d32;display:inline-block;"></span>Operations</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#1a4a8a;display:inline-block;"></span>Planning</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#f9a825;display:inline-block;"></span>Logistics</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#c62828;display:inline-block;"></span>Welfare / Medical</span>
+    <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;"><span style="width:14px;height:14px;border-radius:2px;background:#5a2a8a;display:inline-block;"></span>CMT</span>
+  </div>
+</div>
+<div class="rscat active" id="rsc-site">
+  <div class="rs-hdr s"><div class="rs-hdr-title">Site Emergency Response</div><div class="rs-hdr-when"><strong>Activated when:</strong> Incident occurs at a Pilbara site and can be managed at site level. Group IMT is not activated.</div></div>
+  <div class="rsg" id="rsg-site"></div>
+</div>
+<div class="rscat" id="rsc-imt-pilbara">
+  <div class="rs-hdr p"><div class="rs-hdr-title">Group IMT - Pilbara Escalation</div><div class="rs-hdr-when"><strong>Activated when:</strong> Site incident cannot be managed at site level, or has actual/potential business impact. Assembles at Tea Tree Level 1, Perth.</div></div>
+  <div class="rsg" id="rsg-imt-pilbara"></div>
+</div>
+<div class="rscat" id="rsc-imt-global">
+  <div class="rs-hdr g"><div class="rs-hdr-title">Group IMT - Global / Gabon</div><div class="rs-hdr-when"><strong>Activated when:</strong> Any incident involving Fortescue personnel overseas. Corporate Security and Intelligence team engaged immediately. Duty phone: <strong>0458 458 158</strong>.</div></div>
+  <div class="rsg" id="rsg-imt-global"></div>
+</div>
+<div class="rscat" id="rsc-cmt">
+  <div class="rs-hdr c"><div class="rs-hdr-title">Crisis Management Team (CMT)</div><div class="rs-hdr-when"><strong>Activated when:</strong> Incident exceeds IMT authority - fatality, ASX disclosure, significant media, multi-site impact, government engagement, or spend above IMT delegation.</div></div>
+  <div class="rsg" id="rsg-cmt"></div>
+</div>
+</div>
+
+<!-- CHECKLIST VIEW -->
+<div class="view" id="view-checklist">
+<div class="cl-wrap">
+  <div class="cl-intro"><strong>IMT Readiness Checklist</strong> - Complete this <strong>before</strong> an incident occurs. Tick each item when confirmed. Mark N/A if not applicable. Review every 6 months or when your role or details change.</div>
+  <div class="cl-prog">
+    <div><div style="font-size:12px;font-weight:700;" id="prog-lbl">0 of 0 complete</div><div style="font-size:11px;color:var(--muted);" id="prog-sub">Work through each section</div></div>
+    <div class="pb-wrap"><div class="pb-fill" id="prog-bar" style="width:0%"></div></div>
+    <button class="nb" onclick="window.print()">Print</button>
+    <button class="btn-rst" onclick="resetCL()">Reset</button>
+  </div>
+  <div id="cl-sections"></div>
+  <div style="font-size:11px;color:var(--muted);margin-top:8px;" id="cl-ts">Last completed: not yet recorded</div>
+</div>
+</div>
+
+<!-- MATRIX VIEW -->
+<div class="view" id="view-matrix">
+<div class="mx-wrap">
+  <div class="mx-intro">Select a scenario, enter names, then click <strong>Print</strong> to generate a PDF.</div>
+  <div class="sc-tabs" id="sc-tabs"></div>
+  <div id="sc-pages"></div>
+</div>
+</div>
+
+<!-- ROLE SHEET MODAL -->
+<div class="mb" id="role-modal" onclick="closeMB(event)">
+  <div class="mbox" id="modal-content"></div>
+</div>
+
+
+<div style="margin:32px 32px 0;background:#0d1b2a;border-radius:8px;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="position:relative;width:28px;height:28px;flex-shrink:0;"><div style="position:absolute;inset:3px;border:5px solid #00b140;border-radius:50%;box-shadow:0 0 8px 3px rgba(0,177,64,0.7),0 0 18px 5px rgba(0,177,64,0.35);"></div></div>
+    <div>
+      <div style="font-size:13px;font-weight:700;letter-spacing:2px;color:#fff;">FORTESCUE.</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px;">Group HS&amp;EM | Incident Management Framework</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:24px;flex-wrap:wrap;">
+    <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#00b140;margin-bottom:2px;">Owner</div><div style="font-size:11px;color:#fff;">Group HS&amp;EM</div></div>
+    <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#00b140;margin-bottom:2px;">Status</div><div style="font-size:11px;color:#fff;">Active</div></div>
+    <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#00b140;margin-bottom:2px;">Framework</div><div style="font-size:11px;color:#fff;">AIIMS 2025</div></div>
+  </div>
+</div>
+<div style="padding:8px 32px 24px;font-size:10px;color:#999;">Internal use only. Not for distribution outside Fortescue Group.</div>
+<script>
+// ── MAIN TAB SWITCH ──
+var tabMap = {pilbara:'p',gabon:'g',roles:'r',checklist:'c',matrix:'m'};
+function switchMain(btn, tab) {
+  if (!tab) { tab = btn; btn = null; }
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active','a');});
+  document.querySelectorAll('.mt').forEach(function(t){t.classList.remove('a','p','g','r','c','m');});
+  document.getElementById('view-'+tab).classList.add('active');
+  if(btn){btn.classList.add('a');btn.classList.add(tabMap[tab]||tab);}
+}
+
+// ── LEVEL LADDER ──
+function showLvl(sc, lvl, el) {
+  var lsEls = el.parentElement.querySelectorAll('.ls');
+  lsEls.forEach(function(l){l.classList.remove('a');});
+  el.classList.add('a');
+  var panel = el.closest('.view').querySelector('.panel');
+  panel.querySelectorAll('.lsec').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(sc+'-'+lvl).classList.add('active');
+}
+
+// ── ACCORDIONS ──
+function tog(hdr) { hdr.closest('.ic').classList.toggle('open'); }
+function togST(hdr) { hdr.closest('.st-box').classList.toggle('open'); }
+
+// ── ROLE CARDS ──
+function togRC(card) { card.classList.toggle('open'); }
+
+// ── ROLE SHEETS CATEGORIES ──
+function showRsCat(btn, cat) {
+  document.querySelectorAll('.rscat').forEach(function(c){c.classList.remove('active');});
+  document.querySelectorAll('.rct').forEach(function(t){
+    t.classList.remove('a');
+    t.style.background = 'white';
+    t.style.color = t.dataset.color || '#555';
+    var divs = t.querySelectorAll('div');
+    divs.forEach(function(d){ d.style.color = t.dataset.color || '#555'; });
+  });
+  document.getElementById('rsc-'+cat).classList.add('active');
+  btn.classList.add('a');
+  var bc = btn.dataset.color || '#1a1a1a';
+  btn.style.background = bc;
+  btn.style.color = 'white';
+  var bdivs = btn.querySelectorAll('div');
+  bdivs.forEach(function(d){ d.style.color = 'white'; });
+}
+
+// ── MODAL ──
+function closeMB(e) { if(e.target===document.getElementById('role-modal')) closeModal(); }
+function closeModal() { document.getElementById('role-modal').classList.remove('open'); }
+
+// ── ROLE DATA ──
+var R = {
+  site:[
+    {n:'Site Incident Controller',ai:'AIIMS - Command (Site)',rs:'Immediately',pur:'Overall control of the site-level emergency response. Manages the incident using available site resources. Notifies Group HS&EM. Escalates to Group IMT if the incident cannot be contained at site.',
+    resp:['Declare and manage the site-level emergency response','Activate site emergency response team and wardens','Notify Group HS&EM immediately for awareness','Notify WorkSafe WA for any serious incident - immediately, do not delay','Assess whether escalation to Group IMT is required - escalate early if unsure','Maintain incident log from the moment of activation'],
+    auth:'Full site-level decision authority. Escalation to Group IMT is at site IC discretion.',wh:'Site Emergency Control Centre or designated muster point',kit:'Site emergency kit - location confirmed in site Emergency Management Plan',ph:'Available and reachable for the duration of the site response.',comms:'Communicate directly with Group HS&EM. If Group IMT activates, all information flows through the IMT Teams channel.',prof:'Site Manager or senior site leader with site emergency authority.'},
+    {n:'Site Safety Officer / Warden Lead',ai:'AIIMS - Command Staff (Site)',rs:'Immediately',pur:'Monitor the safety of all site responders. Coordinate wardens and first response. Ensure no-one is placed in unnecessary danger.',
+    resp:['Coordinate site wardens and emergency response team','Monitor safety of all responders - authority to halt unsafe actions','Manage site evacuation or shelter-in-place if required','Account for all personnel - headcount and muster','Advise site IC on safety risks and regulatory obligations'],
+    auth:'Independent authority to halt unsafe actions at site level.',wh:'Site Emergency Control Centre or muster point',kit:'Site emergency kit - wardens kit and evacuation registers',ph:'Available for the duration of the site response.',comms:'Report to Site IC. Notify Group HS&EM of any safety concerns.',prof:'Site HS&EM representative or trained senior warden.'},
+    {n:'Site Medical / First Aid Lead',ai:'AIIMS - Logistics (Welfare, Site)',rs:'Immediately',pur:'Provide first aid and coordinate medical response at site level.',
+    resp:['Provide or coordinate first aid to injured personnel','Liaise with ambulance, retrieval services, or FIFO medical team','Manage casualty records and handover documentation','Coordinate welfare and psychological first aid for affected personnel'],
+    auth:'Manages site medical response.',wh:'Site medical centre or incident location',kit:'Site first aid kit and medical response resources',ph:'Available for the duration of the site response.',comms:'Report to Site IC.',prof:'Site paramedic, nurse, or trained first aid officer.'},
+    {n:'Site Scribe',ai:'AIIMS - Planning Support (Site)',rs:'Immediately',pur:'Maintain the contemporaneous incident log at site level. This is the legal record of the site response.',
+    resp:['Record time-stamped log of all decisions, actions, and communications','Manage site incident display and whiteboard','Support site IC with documentation throughout the response'],
+    auth:'Supports site IC. Log is a legal document.',wh:'Site Emergency Control Centre',kit:'Site emergency kit - log books at site ECC',ph:'Available for the duration of the site response.',comms:'All records held at site level. Copies provided to Group IMT if escalation occurs.',prof:'Site admin, EA, or designated scribe.'}
+  ],
+  'imt-pilbara':[
+    {n:'Incident Controller',ai:'AIIMS - Command',rs:'Aim within 30 min',pur:'Overall control of the Group-level incident response. The IC is accountable for all decisions and outcomes.',
+    resp:['Declare and stand up the IMT - and stand it down when complete','Approve the Incident Action Plan each operational period','Brief the CMT and executive leadership at regular intervals','Authorise all external communications before release','Notify WorkSafe WA and DMIRS for serious incidents - immediately','Decide when to escalate to the Crisis Management Team'],
+    auth:'Holds full decision authority. Only the Safety Officer can override on safety grounds.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1 holds reference materials and templates',ph:'Phone on loud at all times for the duration of your assignment. No exceptions.',comms:'All information through the IMT Teams channel only. No offshoot conversations.',prof:'Senior Group leader with decision authority, not operationally tied to the affected site.'},
+    {n:'Safety Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Monitor the health and safety of all IMT responders. Independent authority - can halt unsafe operations without IC approval.',
+    resp:['Monitor health and safety of all responders for the duration','Independent authority to halt unsafe operations - does not require IC approval','Advise IC on WHS regulatory obligations and notifications','Liaise with WorkSafe WA or DMIRS if required','Manage IMT member fatigue and welfare','Maintain IMT kit readiness at Tea Tree Level 1'],
+    auth:'Independent authority to stop unsafe work. Reports directly to IC.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'Responsible for IMT kit readiness and accessibility',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Group HS&EM. Must be independent of Operations to call it freely.'},
+    {n:'Public Information Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Manage all external and internal communications. Nothing goes to media or stakeholders without IC approval first.',
+    resp:['Draft all media statements and holding lines - IC approval before release','Manage community and stakeholder notifications','Coordinate internal workforce communications with People and Culture','Monitor social media and traditional media throughout the incident','Log all media enquiries and responses'],
+    auth:'Drafts all communications. IC must approve before any release - no exceptions.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Corporate Affairs or Communications. Media management experience essential.'},
+    {n:'Liaison Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Primary point of contact between the IMT and all external agencies - DFES, WA Police, DoH, and others.',
+    resp:['Act as primary contact for DFES, WA Police, Department of Health and other agencies','Coordinate mutual aid and external support requests - IC authorises formal requests','Track all agency commitments and actions during the response','Interface with Traditional Owner groups or community representatives if relevant'],
+    auth:'Coordinates external relationships. IC authorises formal mutual aid requests.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Government Relations or Legal. Existing agency relationships are key.'},
+    {n:'Operations Section Chief',ai:'AIIMS - Operations',rs:'Aim within 60 min',pur:'Direct all tactical response actions from Group level. The link between Perth IMT and site response teams on the ground.',
+    resp:['Direct all tactical response from the Group IMT in Perth','Coordinate with site IC and site response teams','Manage contractor and mutual aid resources on the ground','Request all resources from the Logistics Section Chief','Report operational status to the IC at every briefing cycle'],
+    auth:'Manages all operational actions within the response. Reports to IC.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Group Operations lead - not physically at the affected site.'},
+    {n:'Planning Section Chief',ai:'AIIMS - Planning',rs:'Aim within 60 min',pur:'Build and maintain the Incident Action Plan. Keep the IMT informed of what is known, unknown, and anticipated.',
+    resp:['Develop and update the Incident Action Plan - IC approves each version','Maintain situational awareness: known, unknown, and assumed','Produce situation reports for the IC, CMT, and regulators','Track incident trajectory and anticipate what happens next','Manage resource tracking across the response'],
+    auth:'Prepares the IAP and situation reports. IC approves before distribution.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1 - IAP templates held here',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'HS&EM or Risk - methodical, comfortable with incomplete information.'},
+    {n:'Logistics Section Chief',ai:'AIIMS - Logistics',rs:'Aim within 60 min',pur:'Source and manage everything the response team needs - people, equipment, facilities, and money.',
+    resp:['Source all resources requested by Operations Section Chief','Arrange transport, accommodation and catering for responders','Set up and manage the IMT room at Tea Tree Level 1','Approve emergency procurement within financial delegation','Track all expenditure and supplier commitments'],
+    auth:'Emergency expenditure within financial delegation. IC authorises above delegation.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'Responsible for IMT room setup at Tea Tree Level 1',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Supply Chain or Procurement - needs authority to move quickly on spend.'},
+    {n:'Medical / Welfare Lead',ai:'AIIMS - Logistics (Welfare)',rs:'Aim within 90 min',pur:'Coordinate medical response and manage the welfare of affected personnel and IMT responders.',
+    resp:['Coordinate medical response and liaise with hospitals','Support family and next of kin liaison - with People and Culture','Monitor and manage responder welfare, fatigue and psychological first aid','Activate EAP and coordinate ongoing support'],
+    auth:'Manages welfare and medical coordination. Reports to IC.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'People and Culture or Group Medical - senior enough for sensitive next-of-kin calls.'},
+    {n:'IMT Scribe',ai:'AIIMS - Planning Support',rs:'Aim within 90 min',pur:'Maintain the contemporaneous incident log. This is the legal record of everything that happens during the response.',
+    resp:['Record a time-stamped log of all decisions, actions and communications','Manage the IMT whiteboard and information display','Distribute situation reports and IAP to all IMT members','Manage document control and version management throughout the incident'],
+    auth:'Supports Planning Section Chief. The log is a legal document - accuracy is non-negotiable.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1 - log books and templates held here',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Executive Assistant or Governance admin - calm, accurate, discreet.',scribe:true}
+  ],
+  'imt-global':[
+    {n:'Incident Controller',ai:'AIIMS - Command',rs:'Aim within 30 min',pur:'Overall command of the international incident response from Perth. Must be the most senior leader remaining in Australia.',
+    resp:['Overall command of international incident response from Perth','Decisions on evacuation, medical evacuation, or shelter in place','Brief the Board and notify relevant authorities','Authorise all external statements - executive-level sensitivity','Manage ASX continuous disclosure obligations if the incident is material','Decide when to escalate to the Crisis Management Team'],
+    auth:'Full executive authority. Must be reachable 24/7 for the entire duration of the travel period.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud at all times for the entire duration of the overseas travel period - not just during an active incident.',comms:'All information through the IMT Teams channel only. NDA may be required for classified security briefings.',prof:'Most senior leader remaining in Australia during the travel period.'},
+    {n:'Safety Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Pre-travel risk preparation and in-incident safety advisory for international incidents.',
+    resp:['Complete pre-travel risk assessment and safety briefing for all travellers','Monitor DFAT Smartraveller advisories throughout the trip','Advise IC on health and security risks in Gabon','Coordinate with travel medical assistance provider','Track traveller welfare and check-in schedule during the trip'],
+    auth:'Independent authority to advise on safety. Reports directly to IC.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'Responsible for IMT kit readiness. DFAT Crisis Centre: 1300 555 135',ph:'Phone on loud at all times for the entire duration of the travel period.',comms:'All information through the IMT Teams channel only.',prof:'Group HS&EM - international travel risk experience is valuable.'},
+    {n:'Public Information Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Manage all external and internal communications for an executive-level international incident. ASX and media sensitivity is high.',
+    resp:['Manage media if the incident becomes public - executive profile means high sensitivity','Coordinate ASX continuous disclosure obligations with Legal','Manage internal workforce communications','Draft holding statements - IC must approve before any release','Monitor social and traditional media throughout the incident'],
+    auth:'Drafts all communications. IC must approve before release - no exceptions.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Corporate Affairs or Investor Relations - must understand ASX listed entity obligations.'},
+    {n:'Liaison Officer',ai:'AIIMS - Command Staff',rs:'Aim within 30 min',pur:'Primary contact between the IMT and all external agencies - DFAT, Australian Embassy Gabon, and in-country hosts.',
+    resp:['Primary contact with DFAT Crisis Centre - 1300 555 135','Coordinate with the Australian Embassy or High Commission in Gabon','Interface with Gabon government or in-country hosts as required','Manage International SOS or travel assistance provider relationship'],
+    auth:'Initiates contact with DFAT and Embassy. IC authorises formal government requests.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'DFAT Crisis Centre: 1300 555 135 - save this number now',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Government Relations or Legal - comfort navigating consular and sovereign processes.'},
+    {n:'Corporate Security and Intelligence Lead',ai:'AIIMS - Command (Global Standing Member)',rs:'Aim within 30 min',pur:'Provide geopolitical risk assessment, real-time security intelligence, and extraction guidance. Engagement is mandatory - not optional.',
+    resp:['Provide geopolitical and threat intelligence briefings to the IC','Advise on safe movement, extraction routes, and in-country security contacts','Coordinate with in-country security resources','Advise IC on whether classified briefings require NDA from IMT members','Monitor the security environment for the duration'],
+    auth:'Advises IC directly on security matters. Some briefings may be restricted to Command roles only.',wh:'Tea Tree, Level 1 - Perth Group Office (or remote)',kit:'Corporate Security resources. Duty phone: 0458 458 158',ph:'Phone on loud at all times for the duration of your assignment.',comms:'All information through the IMT Teams channel only. Classified intelligence shared only with authorised IMT members.',prof:'Corporate Security and Intelligence team lead or delegate.'},
+    {n:'Operations Section Chief',ai:'AIIMS - Operations',rs:'Aim within 60 min',pur:'Direct all in-country response actions from Perth. The link between the IMT and the in-country lead on the ground.',
+    resp:['Direct in-country response actions from Perth','Manage the Libreville Monitoring Centre interface','Coordinate with the designated in-country lead within the travelling party','Direct evacuation or medical extraction if required','Manage security support if engaged'],
+    auth:'Manages all operational actions. Reports to IC.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Operations or Security with international experience.'},
+    {n:'Planning Section Chief',ai:'AIIMS - Planning',rs:'Aim within 60 min',pur:'Maintain the full situational picture - who is where, what is their status, and what are the contingency options.',
+    resp:['Maintain the full traveller manifest - who, where, status','Track itinerary, hotels, local contacts and hospitals','Produce situation reports across time zones','Map contingency options - alternate routes, medical facilities, extraction points'],
+    auth:'Prepares the IAP and situation reports. IC approves before distribution.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1 - IAP templates held here',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'HS&EM or Executive Support - must hold clarity across a fast-moving international situation.'},
+    {n:'Logistics Section Chief',ai:'AIIMS - Logistics',rs:'Aim within 60 min',pur:'Source and arrange everything needed - emergency flights, medevac, accommodation, and financial approvals. Speed is critical.',
+    resp:['Arrange emergency flights, charter or medical evacuation','Manage travel insurance and assistance provider claims','Secure alternative accommodation if required','Approve emergency expenditure within financial delegation - medevac costs can be significant'],
+    auth:'Emergency expenditure within financial delegation. IC authorises above delegation.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1. Confirm travel insurance and medevac provider details before travel.',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'Finance or Procurement - needs authority to commit emergency spend quickly.'},
+    {n:'People and Culture / Welfare Lead',ai:'AIIMS - Logistics (Welfare)',rs:'Aim within 90 min',pur:'Manage next of kin notifications and welfare for affected personnel and families. Sensitive and critical role.',
+    resp:['Next of kin notifications - IC authorises, you deliver. Must happen before any media release.','Activate EAP for affected personnel and their families','Support the remaining workforce if the incident becomes public','Coordinate medical repatriation welfare support'],
+    auth:'Manages welfare and P&C coordination. IC authorises next of kin notification.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'CPO or senior P&C - next of kin notification for senior leaders is extremely sensitive.'},
+    {n:'IMT Scribe',ai:'AIIMS - Planning Support',rs:'Aim within 90 min',pur:'Maintain the contemporaneous log of all decisions, actions and communications across time zones. This is the legal record.',
+    resp:['Time-stamped log of all decisions, calls and actions','Manage communications log across time zones','Document control and version management','Distribute situation reports to all IMT members'],
+    auth:'Supports Planning Section Chief. The log is a legal document.',wh:'Tea Tree, Level 1 - Perth Group Office',kit:'IMT kit at Tea Tree Level 1 - log books and templates held here',ph:'Phone on loud for the duration of your assignment.',comms:'All information through the IMT Teams channel only.',prof:'EA to CEO or senior governance admin - trusted, calm, discreet, accurate.',scribe:true}
+  ],
+  cmt:[
+    {n:'CMT Chair',ai:'CMT - Executive Command',rs:'Aim within 30 min of IC recommendation',pur:'Lead the strategic response at executive level. Accountable to the Board. IMT IC continues operational response and reports to CMT Chair.',
+    resp:['Provide strategic leadership and direction above IMT level','Receive regular briefings from the IMT IC using the Incident Action Plan','Make decisions on Board notification, ASX disclosure, and government engagement','Approve major resource commitments above IMT financial delegation','Manage relationships with regulators, government ministers, and the Board','Decide when to stand down the CMT'],
+    auth:'Full executive and Board-level authority. Highest decision-making authority in the response structure.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT briefing materials - IC provides situation reports at each briefing cycle',ph:'Phone on loud at all times for the duration of CMT activation.',comms:'All information through the IMT Teams channel. CMT may use a separate channel for Board-level discussions.',prof:'CEO or most senior executive delegate available at time of activation.'},
+    {n:'Chief Financial Officer',ai:'CMT - Executive Member',rs:'Aim within 30 min',pur:'Provide financial authority and oversight at CMT level. Approve resource commitments above IMT delegation.',
+    resp:['Approve emergency expenditure above IMT financial delegation','Advise CMT Chair on financial implications and risk exposure','Manage treasury and insurance notifications if required','Advise on ASX continuous disclosure obligations with General Counsel'],
+    auth:'Financial authority above IMT delegation. Reports to CMT Chair.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT briefing materials',ph:'Phone on loud for the duration of CMT activation.',comms:'All information through the IMT Teams channel.',prof:'CFO or senior Finance delegate with full financial authority.'},
+    {n:'General Counsel',ai:'CMT - Executive Member',rs:'Aim within 30 min',pur:'Provide legal advice and manage regulatory obligations at CMT level - including ASX disclosure, privilege, and regulatory notifications.',
+    resp:['Advise CMT on legal obligations, liability, and regulatory requirements','Manage ASX continuous disclosure process with Corporate Affairs','Advise on privilege and evidence preservation','Coordinate with external legal counsel if required','Manage NDA requirements for classified security briefings in global incidents'],
+    auth:'Legal authority at CMT level. Reports to CMT Chair.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT briefing materials',ph:'Phone on loud for the duration of CMT activation.',comms:'All information through the IMT Teams channel.',prof:'General Counsel or senior legal delegate.'},
+    {n:'Chief People Officer',ai:'CMT - Executive Member',rs:'Aim within 30 min',pur:'Manage people and culture implications at CMT level - next of kin for senior personnel, workforce communications, and executive welfare.',
+    resp:['Oversee next of kin notifications for any fatality or serious injury at executive level','Manage workforce communications strategy with the PIO','Advise CMT on people and culture implications','Oversee EAP and welfare support for the broader organisation'],
+    auth:'P&C authority at CMT level. Reports to CMT Chair.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT briefing materials',ph:'Phone on loud for the duration of CMT activation.',comms:'All information through the IMT Teams channel.',prof:'CPO or senior P&C executive delegate.'},
+    {n:'Relevant Group GM',ai:'CMT - Executive Member',rs:'Aim within 30 min',pur:'Provide operational and business unit context to the CMT. Advise on implications for their area and support decision-making.',
+    resp:['Provide operational context and business impact assessment','Advise CMT Chair on implications for their business unit','Support resourcing decisions and operational trade-offs','Coordinate with their team to manage BAU impacts during the incident'],
+    auth:'Advisory role at CMT level. Reports to CMT Chair.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT briefing materials',ph:'Phone on loud for the duration of CMT activation.',comms:'All information through the IMT Teams channel.',prof:'Group GM most relevant to the nature and location of the incident.'},
+    {n:'CMT Scribe',ai:'CMT - Support',rs:'Aim within 30 min',pur:'Maintain the contemporaneous log of all CMT decisions and actions. CMT log is a separate legal record from the IMT log.',
+    resp:['Record time-stamped log of all CMT decisions, actions, and communications','Manage CMT document control and version management','Distribute CMT briefing materials and situation reports','Coordinate with IMT Scribe to maintain consistent master record'],
+    auth:'Supports CMT Chair. CMT log is a legal document.',wh:'Tea Tree, Level 1 - Perth Group Office or designated CMT room',kit:'CMT kit - log books and templates',ph:'Phone on loud for the duration of CMT activation.',comms:'All information through the IMT Teams channel.',prof:'EA to CEO or Chief of Staff - trusted, calm, discreet, accurate.'}
+  ]
+};
+
+var catInfo = {
+  site:{sc:'site',label:'Site Emergency Response'},
+  'imt-pilbara':{sc:'pilbara',label:'Group IMT - Pilbara'},
+  'imt-global':{sc:'gabon',label:'Group IMT - Global / Gabon'},
+  cmt:{sc:'cmt',label:'Crisis Management Team'}
+};
+
+// Build role cards for Pilbara and Gabon views
+
+function getAiimsClass(name, cat) {
+  if (cat === 'site') return 'aiims-site';
+  if (cat === 'cmt') return 'aiims-cmt';
+  if (name.indexOf('Incident Controller') !== -1) return 'aiims-ic';
+  if (name.indexOf('Safety Officer') !== -1 || name.indexOf('Public Information') !== -1 || name.indexOf('Liaison') !== -1 || name.indexOf('Corporate Security') !== -1) return 'aiims-command';
+  if (name.indexOf('Operations') !== -1) return 'aiims-ops';
+  if (name.indexOf('Planning') !== -1 || name.indexOf('Scribe') !== -1) return 'aiims-planning';
+  if (name.indexOf('Logistics') !== -1) return 'aiims-logistics';
+  if (name.indexOf('Medical') !== -1 || name.indexOf('Welfare') !== -1 || name.indexOf('People') !== -1) return 'aiims-welfare';
+  return '';
+}
+
+function buildRoleCard(role, idx, cat, scClass) {
+  var isCmd = role.ai.indexOf('Command') !== -1;
+  var cmdClass = isCmd ? ' cmd ' + scClass : '';
+  var aimsClass = ' ' + getAiimsClass(role.n, cat);
+  var d = document.createElement('div');
+  d.className = 'rc' + cmdClass + aimsClass;
+  var respHtml = role.resp.map(function(r){return '<li>'+r+'</li>';}).join('');
+  var scribeHtml = role.scribe ? '<div class="st-box"><div class="st-hdr" onclick="togST(this)"><div class="ic-title" style="color:#1a4a8a;">&#128221; Scribe Note-Taking Template</div><span class="chev">&#9660;</span></div><div class="st-body"><div style="background:#fffbea;border:1px solid #e0c840;border-radius:4px;padding:8px 10px;margin-bottom:10px;font-size:11px;"><strong style="color:#7a5c00;">Key rule:</strong> Record everything in real time. Never reconstruct from memory.</div><div class="st-sec"><div class="st-lbl">1. Opening Entry</div><div class="st-mono">INCIDENT LOG - [IMT-001-Location-DDMMYY]<br>Noggin Log No: ___ &nbsp; Date: ___ &nbsp; Time: ___ AWST<br>Opened by: ___ &nbsp; IMT activated by: ___<br>Incident: ___ &nbsp; Members present: ___</div></div><div class="st-sec"><div class="st-lbl">2. Standard Entry Format</div><div class="st-mono">[TIME AWST] [TYPE] [BY WHOM] [DETAIL]<br>Types: DEC &bull; ACT &bull; INFO &bull; NOTIF &bull; BRIEF &bull; ESCL &bull; COMM &bull; WELF<br><br>09:14 DEC IC (J.Smith) IMT stood up. Level 2 declared.<br>09:22 NOTIF IC WorkSafe WA notified. Ref: WS-XXXXX.<br>09:41 ESCL IC CMT activation recommended to CEO.</div></div><div class="st-sec"><div class="st-lbl">3. Briefing Record</div><div class="st-mono">BRIEFING [No.] - [TIME] AWST &nbsp; Attendees: ___<br>Situation: ___ &nbsp; Priorities: ___ &nbsp; Actions: ___<br>Next briefing: ___ AWST &nbsp; IAP version: ___</div></div><div class="st-sec"><div class="st-lbl">4. Notification Log</div><div class="st-mono">[TIME] Notified: [Agency] By: [Name] Via: [call/email/Teams]<br>Ref: ___ &nbsp; Outcome: ___<br>Track: WorkSafe WA &bull; DMIRS &bull; EPA &bull; Police &bull; DFES &bull; DFAT &bull; ASX &bull; NOK</div></div><div class="st-sec"><div class="st-lbl">5. Closing Entry</div><div class="st-mono">[TIME] DEC IC ([name]) IMT stood down.<br>Duration: ___ hrs &nbsp; Outstanding: ___ &nbsp; Debrief: ___ (within 48 hrs)<br>Closed by: ___ &nbsp; Handed to: ___ (HS&amp;EM / IC)</div></div><div style="background:#f5faf5;border:1px solid #b8d8b8;border-radius:4px;padding:8px 10px;"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2a6a2a;margin-bottom:4px;">Best practice</div><ul class="blist" style="font-size:11px;"><li>Record every entry in AWST</li><li>Write what was decided - not your interpretation</li><li>Never delete - cross out errors with a single line and initial</li><li>Post key decisions to Teams in real time</li><li>At stand-down, hand complete log to IC and HS&amp;EM immediately</li></ul></div></div></div>' : '';
+  d.innerHTML = '<div class="rc-hdr" onclick="togRC(this.parentElement)"><div class="rc-L"><span style="font-size:15px;">'+(isCmd?'&#127919;':'&#9881;')+'</span><div><div class="rn">'+role.n+'</div><div class="rt">'+role.ai+'</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="rb-tag">'+role.rs+'</span><span class="chev">&#9660;</span></div></div><div class="rc-body"><div class="sec-lbl">Responsible for</div><ul class="blist">'+respHtml+'</ul><div class="sec-lbl">Decision authority</div><div class="note">'+role.auth+'</div><div class="sec-lbl">Suggested function</div><div class="note">'+role.prof+'</div><div class="pnote">&#128241; '+role.ph+'</div>'+scribeHtml+'</div>';
+  return d;
+}
+
+// Populate Pilbara and Gabon role grids
+R['imt-pilbara'].forEach(function(role, i){
+  document.getElementById('rg-pilbara').appendChild(buildRoleCard(role, i, 'imt-pilbara', 'p'));
+});
+R['imt-global'].forEach(function(role, i){
+  document.getElementById('rg-gabon').appendChild(buildRoleCard(role, i, 'imt-global', 'g'));
+});
+
+// Build role sheet cards
+Object.keys(R).forEach(function(cat){
+  var grid = document.getElementById('rsg-'+cat);
+  if(!grid) return;
+  var info = catInfo[cat];
+  R[cat].forEach(function(role, idx){
+    var card = document.createElement('div');
+    card.className = 'rsc ' + getAiimsClass(role.n, cat);
+    card.innerHTML = '<div class="rsc-top"><div class="rsc-scen '+info.sc+'">'+info.label+'</div><div class="rsc-name">'+role.n+'</div><div class="rsc-aiims">'+role.ai+'</div></div><div class="rsc-bot"><div class="rsc-resp">&#9201; '+role.rs+'</div><button class="btn-view" onclick="openRS(\''+cat+'\','+idx+')">View / Print</button></div>';
+    grid.appendChild(card);
+  });
+});
+
+// Open role sheet modal
+function openRS(cat, idx) {
+  var r = R[cat][idx];
+  var info = catInfo[cat];
+  var respHtml = r.resp.map(function(x){return '<li>'+x+'</li>';}).join('');
+  var html = '<div class="mhdr">'
+    +'<div class="mscen '+info.sc+'">'+info.label+'</div>'
+    +'<div class="mrole">'+r.n+'</div>'
+    +'<div class="maiims">'+r.ai+' &nbsp;|&nbsp; '+r.rs+'</div>'
+    +'<div class="macts"><button class="btn-cl" onclick="closeModal()">Close</button><button class="btn-pr" onclick="window.print()">Print / PDF</button></div>'
+    +'</div><div class="mbody">'
+    +'<div class="msec"><div class="msec-lbl">Your role in plain terms</div><p style="font-size:13px;color:#222;line-height:1.6;">'+r.pur+'</p></div>'
+    +'<div class="msec"><div class="msec-lbl">Your responsibilities</div><ul class="mlist">'+respHtml+'</ul></div>'
+    +'<div class="msec"><div class="msec-lbl">Decision authority</div><p style="font-size:12px;color:#333;line-height:1.6;">'+r.auth+'</p></div>'
+    +'<div class="msec"><div class="mgrid"><div><div class="mgrid-lbl">Where to go</div><div class="mgrid-val">'+r.wh+'</div></div><div><div class="mgrid-lbl">IMT Kit</div><div class="mgrid-val">'+r.kit+'</div></div></div></div>'
+    +'<div class="mhl"><strong>&#128241; Phone availability</strong>'+r.ph+'</div>'
+    +'<div class="mhl y" style="margin-top:8px;"><strong>&#128172; Communications rule</strong>'+r.comms+'</div>'
+    +'<div class="msec" style="margin-top:12px;"><div class="msec-lbl">Typical background</div><p style="font-size:12px;color:#555;font-style:italic;">'+r.prof+'</p></div>'
+    +'<div class="signoff"><div class="signoff-lbl">Acknowledgement and Sign-Off</div>'
+    +'<p style="font-size:12px;color:#333;line-height:1.7;margin-bottom:12px;">By signing below, I confirm that:</p>'
+    +'<ul style="font-size:12px;color:#333;line-height:1.9;padding-left:18px;">'
+    +'<li>I have read and understood my role, responsibilities, and decision authority</li>'
+    +'<li>All incident information is <strong>strictly confidential</strong> - IMT Teams channel only, no unauthorised sharing</li>'
+    +'<li>For global incidents, I may be required to sign a formal NDA before receiving classified briefings</li>'
+    +'<li>My phone must be on loud and I must be reachable for the duration of my assignment</li>'
+    +'<li>I will notify Group HS&EM immediately if my contact details, availability, or role changes</li>'
+    +'</ul>'
+    +'<div class="sig-grid">'
+    +'<div><div class="sig-item-lbl">Full name</div><div class="sig-line"></div></div>'
+    +'<div><div class="sig-item-lbl">Signature</div><div class="sig-line"></div></div>'
+    +'<div><div class="sig-item-lbl">Date</div><div class="sig-line"></div></div>'
+    +'<div><div class="sig-item-lbl">IMT role assigned</div><div class="sig-line" style="font-size:12px;color:#555;padding-top:2px;">'+r.n+'</div></div>'
+    +'</div>'
+    +'<div style="margin-top:12px;"><div class="sig-item-lbl">Noggin Log Number (if completing during activation)</div><div class="sig-line"></div></div>'
+    +'<div class="sig-ftr">Return signed copy to Group HS&EM. Fortescue Group - '+info.label+'</div>'
+    +'</div></div>';
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('role-modal').classList.add('open');
+}
+
+// ── CHECKLIST ──
+var CLD = [
+  {sec:'&#128100; Your Contact Details',items:[
+    {t:'Mobile number is current in SuccessFactors',d:'Log in and confirm your mobile number is correct. This is the number used for IMT activation text messages.',w:'SuccessFactors → My Profile → Contact Information'},
+    {t:'After-hours mobile confirmed with HS&EM',d:'If your activation mobile differs from your work number, advise Group HS&EM directly.',w:'Advise Group HS&EM'},
+    {t:'Outlook email accessible on your mobile',d:'Confirm you can receive and respond to activation emails on your phone outside business hours.',w:'Check Outlook mobile app'},
+    {t:'Alternate nominated and confirmed',d:'Confirm who your alternate is. Ensure HS&EM has their contact details. Notify HS&EM before any leave.',w:'Advise Group HS&EM of your nominated alternate'}
+  ]},
+  {sec:'&#128203; Know Your Role',items:[
+    {t:'You have read your individual role sheet',d:'Open the Role Sheets tab, find your role, and read the full sheet - purpose, responsibilities, decision authority.',w:'Role Sheets tab in this document'},
+    {t:'You know who the IC is for your scenario',d:'Confirm the name of the nominated IC for your scenario. You need to know who to report to from the moment you are activated.',w:'Ask Group HS&EM for the current IMT contact list'},
+    {t:'You understand your decision authority',d:'Review the Decision-Making Authority section for your scenario. Know what you can and cannot approve.',w:'Level 2 panel - Decision-Making Authority accordion'},
+    {t:'You know the regulatory obligations for your role',d:'Know which notifications are required, in what timeframe, and whether your role initiates them.',w:'Level 2 panel - Regulatory Obligations accordion'}
+  ]},
+  {sec:'&#9889; Activation Readiness',items:[
+    {t:'You know where Tea Tree Level 1 is and can access it after hours',d:'Physically locate the IMT room. Confirm access arrangements outside business hours.',w:'Tea Tree, Level 1 - Perth Group Office'},
+    {t:'You know where the IMT kit is and what it contains',d:'Locate the IMT kit. Familiarise yourself with its contents - do not search for it during an incident.',w:'Tea Tree, Level 1 - confirm with Group HS&EM'},
+    {t:'Microsoft Teams installed and notifications enabled on your phone',d:'The IMT communicates exclusively through a dedicated Teams channel. Confirm you can receive messages outside the office.',w:'Microsoft Teams app → Settings → Notifications'},
+    {t:'You understand your suggested response timeframe',d:'Command roles: aim for around 30 minutes. Section Chiefs: aim for around 60 minutes. Support roles: aim for around 90 minutes. Respond as fast as you can.',w:'Confirm with Group HS&EM if you have concerns'},
+    {t:'Your manager is aware you hold an IMT role',d:'Your manager will be notified when you are activated. Confirm they understand you may need to step away from BAU immediately.',w:'Conversation with your direct manager'}
+  ]},
+  {sec:'&#9992;&#65039; Leave and Travel',items:[
+    {t:'HS&EM notified of your leave or travel dates',d:'Notify Group HS&EM before any planned leave or travel so your alternate can be confirmed.',w:'Notify Group HS&EM directly'},
+    {t:'Your alternate has been briefed and confirmed',d:'Before going on leave, personally brief your alternate. Do not just forward documents.',w:'Direct handover conversation with your alternate'},
+    {t:'For Gabon/global travel - pre-travel requirements complete',d:'Register on Smartraveller, confirm travel insurance, confirm in-country lead, save DFAT Crisis Centre: 1300 555 135.',w:'smartraveller.gov.au → Register your trip'}
+  ]},
+  {sec:'&#128273; Role-Specific Checks',items:[
+    {t:'IC only - WorkSafe WA serious incident notification process confirmed',d:'Know the notification number and process. WorkSafe WA: 1300 307 877. Do not look this up during an incident.',w:'worksafe.wa.gov.au or contact Group HS&EM'},
+    {t:'IC only - ASX continuous disclosure process and Legal contact confirmed',d:'Know who your Legal contact is. Confirm the process for triggering ASX disclosure if the incident is material.',w:'Confirm with General Counsel or Corporate Affairs'},
+    {t:'Safety Officer only - IMT kit at Tea Tree Level 1 is complete and current',d:'Physically check the IMT kit. Confirm reference materials are current. Replace anything out of date.',w:'Tea Tree, Level 1 - inspect kit physically'},
+    {t:'Logistics only - Emergency procurement authority confirmed',d:'Confirm your financial delegation for emergency procurement. Know who to call if spend exceeds your authority.',w:'Confirm with Finance or your direct manager'},
+    {t:'Liaison Officer only - Key agency contacts saved in phone',d:'Save now: DFES (1300 657 209), WA Police (000), DFAT Crisis Centre (1300 555 135), WorkSafe WA (1300 307 877).',w:'Save to phone contacts labelled clearly'},
+    {t:'P&C / Welfare Lead only - EAP contact details and NOK process confirmed',d:'Confirm current EAP provider and contact number. Understand the NOK notification process - IC authorises, P&C delivers.',w:'Confirm with People and Culture team'}
+  ]},
+  {sec:'&#128197; Review and Currency',items:[
+    {t:'This checklist completed within the last 6 months',d:'IMT readiness checks should be completed at least every 6 months, or sooner if your role, details, or the IMT structure changes.',w:'Note your completion date when done'},
+    {t:'Participated in an IMT exercise or tabletop in the last 12 months',d:'Exercises are the best way to test readiness before a real event. If none has been run in the last 12 months, raise this with Group HS&EM.',w:'Confirm with Group HS&EM'},
+    {t:'Any changes to your role or contact details communicated to HS&EM',d:'If anything has changed - new phone, change of role, change of alternate - notify Group HS&EM immediately.',w:'Notify Group HS&EM directly'}
+  ]}
+];
+
+// Build checklist
+var clSecs = document.getElementById('cl-sections');
+var clState = [];
+CLD.forEach(function(sec, si){
+  var sDiv = document.createElement('div');
+  sDiv.className = 'cl-sec';
+  sDiv.innerHTML = '<div class="cl-sec-hdr"><span style="font-size:16px;">'+sec.sec.split(' ')[0]+'</span><div class="cl-sec-title">'+sec.sec.split(' ').slice(1).join(' ')+'</div></div>';
+  sec.items.forEach(function(item, ii){
+    clState.push({done:false,na:false});
+    var idx = clState.length - 1;
+    var iDiv = document.createElement('div');
+    iDiv.className = 'cli';
+    iDiv.dataset.idx = idx;
+    iDiv.innerHTML = '<div class="cbox"></div><div style="flex:1;"><div class="cl-title">'+item.t+'</div><div class="cl-detail">'+item.d+'</div><div class="cl-where">'+item.w+'</div></div><button class="btn-na" onclick="togNA(event,'+idx+')">N/A</button>';
+    iDiv.onclick = function(e){ if(e.target.classList.contains('btn-na')) return; togCL(idx); };
+    sDiv.appendChild(iDiv);
+  });
+  clSecs.appendChild(sDiv);
+});
+
+function togCL(idx) {
+  if(clState[idx].na) return;
+  clState[idx].done = !clState[idx].done;
+  updateCLUI(idx);
+  updateProgress();
+  saveCL();
+}
+function togNA(e, idx) {
+  e.stopPropagation();
+  clState[idx].na = !clState[idx].na;
+  if(clState[idx].na) clState[idx].done = false;
+  updateCLUI(idx);
+  updateProgress();
+  saveCL();
+}
+function updateCLUI(idx) {
+  var el = document.querySelector('[data-idx="'+idx+'"]');
+  if(!el) return;
+  var box = el.querySelector('.cbox');
+  var btn = el.querySelector('.btn-na');
+  el.classList.remove('done','na');
+  box.textContent = '';
+  if(clState[idx].done){ el.classList.add('done'); box.textContent = '✓'; }
+  else if(clState[idx].na){ el.classList.add('na'); box.textContent = 'N/A'; btn.textContent = 'Undo'; }
+  else { btn.textContent = 'N/A'; }
+}
+function updateProgress() {
+  var total = clState.filter(function(s){return !s.na;}).length;
+  var done = clState.filter(function(s){return s.done;}).length;
+  var pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById('prog-lbl').textContent = done + ' of ' + total + ' complete';
+  document.getElementById('prog-sub').textContent = pct === 100 ? 'All items confirmed' : clState.filter(function(s){return s.na;}).length + ' marked N/A';
+  document.getElementById('prog-bar').style.width = pct + '%';
+  if(pct === 100) {
+    var now = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('cl-ts').textContent = 'Last completed: ' + now;
+    try { localStorage.setItem('imt_cl_done', now); } catch(e){}
+  }
+}
+function saveCL() {
+  try { localStorage.setItem('imt_cl', JSON.stringify(clState.map(function(s){return s.done?'d':s.na?'n':'';}))); } catch(e){}
+}
+function resetCL() {
+  if(!confirm('Reset all checklist items?')) return;
+  clState.forEach(function(s,i){ clState[i]={done:false,na:false}; updateCLUI(i); });
+  try { localStorage.removeItem('imt_cl'); localStorage.removeItem('imt_cl_done'); } catch(e){}
+  updateProgress();
+  document.getElementById('cl-ts').textContent = 'Last completed: not yet recorded';
+}
+
+// Load saved checklist
+(function(){
+  try {
+    var saved = JSON.parse(localStorage.getItem('imt_cl') || '[]');
+    saved.forEach(function(v,i){ if(i<clState.length){ clState[i]={done:v==='d',na:v==='n'}; updateCLUI(i); } });
+    var done = localStorage.getItem('imt_cl_done');
+    if(done) document.getElementById('cl-ts').textContent = 'Last completed: ' + done;
+    updateProgress();
+  } catch(e){}
+})();
+
+// ── MATRIX ──
+var scenarios = [
+  {id:'s1',label:'Site EM Response',desc:'Incident is contained at site level. Site response team manages independently. Group IMT not required.',
+   triggers:['Incident can be fully managed by site resources','No business-level impact anticipated','Escalates to Group IMT if situation changes'],
+   cols:[{cls:'site',label:'Site Response'}],
+   rows:[
+     {grp:'Command',roles:[{n:'Incident Controller',s:'Site IC'},{n:'Safety Officer / Warden Lead',s:'Site safety'},{n:'Warden / First Response Lead',s:'Site warden'}]},
+     {grp:'Notifications',roles:[{n:'Group HS&EM Notified',s:'Awareness only'},{n:'WorkSafe WA (if required)',s:'Notified by'}]},
+     {grp:'Support',roles:[{n:'Medical / First Aid',s:'Site medical'},{n:'Site Scribe',s:'Site scribe'}]}
+   ]},
+  {id:'s2',label:'Group IMT - Pilbara',desc:'Incident cannot be managed at site level, or has actual or potential business impact. Group IMT activates at Tea Tree Level 1.',
+   triggers:['Site cannot contain incident with available resources','Incident has or may have business, operational, or reputational impact','Regulator notification required','Media or community attention likely'],
+   cols:[{cls:'site',label:'Site Response'},{cls:'imt-p',label:'Group IMT - Perth'}],
+   rows:[
+     {grp:'Command',roles:[{n:'Incident Controller',s1:'Site IC',s2:'Group IC'},{n:'Safety Officer',s1:'Site safety',s2:'Group HS&EM'},{n:'Public Information Officer',s1:'-',s2:'Corporate Affairs'},{n:'Liaison Officer',s1:'-',s2:'Govt Relations / Legal'}]},
+     {grp:'General Staff',roles:[{n:'Operations Section Chief',s1:'Site ops',s2:'Group operations'},{n:'Planning Section Chief',s1:'Site planning',s2:'HS&EM / Risk'},{n:'Logistics Section Chief',s1:'Site logistics',s2:'Supply Chain'}]},
+     {grp:'Support',roles:[{n:'Medical / Welfare Lead',s1:'Site medical',s2:'P&C / Group Medical'},{n:'IMT Scribe',s1:'Site scribe',s2:'EA / Governance admin'}]}
+   ]},
+  {id:'s3',label:'Group IMT + CMT',desc:'Incident escalated beyond IMT authority. CMT activates above the IMT. IC continues operational response and reports to CMT Chair.',
+   triggers:['Fatality or multiple serious injuries','ASX material disclosure threshold reached','Significant media or reputational exposure','Multi-site or major production impact','Government or ministerial engagement required'],
+   cols:[{cls:'imt-p',label:'Group IMT - Perth'},{cls:'cmt',label:'Crisis Management Team'}],
+   rows:[
+     {grp:'Command / Executive',roles:[{n:'IC / CMT Chair',s1:'Group IC',s2:'CMT Chair (CEO / delegate)'},{n:'Safety Officer',s1:'Group HS&EM',s2:'-'},{n:'Public Information Officer',s1:'Corporate Affairs',s2:'CMT comms lead'},{n:'Liaison Officer',s1:'Govt Relations / Legal',s2:'General Counsel'}]},
+     {grp:'CMT Executive Members',roles:[{n:'Chief Financial Officer',s1:'-',s2:'Name'},{n:'Chief People Officer',s1:'-',s2:'Name'},{n:'Relevant Group GM',s1:'-',s2:'Name / function'}]},
+     {grp:'General Staff',roles:[{n:'Operations Section Chief',s1:'Group operations',s2:'-'},{n:'Planning Section Chief',s1:'HS&EM / Risk',s2:'-'},{n:'Logistics Section Chief',s1:'Supply Chain',s2:'-'}]},
+     {grp:'Support',roles:[{n:'Medical / Welfare Lead',s1:'P&C / Group Medical',s2:'-'},{n:'IMT Scribe',s1:'Group scribe',s2:'CMT scribe / EA to CEO'}]}
+   ]},
+  {id:'s4',label:'Perth IMT + Gabon IMT',desc:'International incident. Perth Group IMT activates and coordinates from Australia. Libreville Monitoring Centre operates simultaneously. Perth IMT is command authority.',
+   triggers:['Any incident involving injury, security threat, or evacuation of travelling personnel','Geopolitical event affecting Fortescue personnel in-country','Medical event requiring evacuation or repatriation'],
+   cols:[{cls:'imt-p',label:'Group IMT - Perth'},{cls:'imt-g',label:'Gabon / In-Country'}],
+   rows:[
+     {grp:'Command',roles:[{n:'Incident Controller',s1:'Perth IC (most senior in AUS)',s2:'In-country lead (travelling party)'},{n:'Safety Officer',s1:'Group HS&EM',s2:'In-country safety contact'},{n:'Public Information Officer',s1:'Corporate Affairs / IR',s2:'- All comms through Perth'},{n:'Liaison Officer',s1:'Govt Relations / Legal',s2:'Embassy / DFAT in-country'},{n:'Corporate Security & Intelligence',s1:'Corporate Security lead (0458 458 158)',s2:'In-country security contact'}]},
+     {grp:'General Staff',roles:[{n:'Operations Section Chief',s1:'Group operations / Security',s2:'Libreville Monitoring Centre'},{n:'Planning Section Chief',s1:'HS&EM / Executive Support',s2:'In-country planning'},{n:'Logistics Section Chief',s1:'Finance / Procurement',s2:'In-country logistics / medevac'}]},
+     {grp:'Support',roles:[{n:'P&C / Welfare Lead',s1:'CPO / Senior P&C',s2:'- Through Perth'},{n:'IMT Scribe',s1:'EA / Governance admin',s2:'- Perth holds master log'}]},
+     {grp:'Key External Contacts',roles:[{n:'DFAT Crisis Centre - 1300 555 135',s1:'Liaison Officer manages',s2:'-'},{n:'Australian Embassy Gabon',s1:'Perth contact',s2:'In-country contact'},{n:'Travel / Medical Assistance Provider',s1:'Provider / contact number',s2:'In-country rep'}]}
+   ]},
+  {id:'s5',label:'Full Stack - Site + IMT + CMT',desc:'Major incident requiring all three tiers simultaneously. Each tier reports upward - site IC to Group IC, Group IC to CMT Chair.',
+   triggers:['Multiple fatalities or mass casualty event','Major environmental incident with regulatory and media attention','Multi-site event with production and market impact'],
+   cols:[{cls:'site',label:'Site Response'},{cls:'imt-p',label:'Group IMT'},{cls:'cmt',label:'CMT'}],
+   rows:[
+     {grp:'Command / Executive',roles:[{n:'IC / CMT Chair',s1:'Site IC',s2:'Group IC',s3:'CMT Chair'},{n:'Safety Officer',s1:'Site safety',s2:'Group HS&EM',s3:'-'},{n:'Public Information Officer',s1:'-',s2:'Corporate Affairs',s3:'CMT comms lead'},{n:'Liaison Officer',s1:'-',s2:'Govt Relations / Legal',s3:'General Counsel'}]},
+     {grp:'CMT Executive',roles:[{n:'Chief Financial Officer',s1:'-',s2:'-',s3:'Name'},{n:'Chief People Officer',s1:'-',s2:'-',s3:'Name'},{n:'Relevant Group GM',s1:'-',s2:'-',s3:'Name'}]},
+     {grp:'General Staff',roles:[{n:'Operations Section Chief',s1:'Site ops',s2:'Group ops',s3:'-'},{n:'Planning Section Chief',s1:'Site planning',s2:'HS&EM / Risk',s3:'-'},{n:'Logistics Section Chief',s1:'Site logistics',s2:'Supply Chain',s3:'-'}]},
+     {grp:'Support',roles:[{n:'Medical / Welfare Lead',s1:'Site medical',s2:'P&C / Group Medical',s3:'-'},{n:'Scribe / Log',s1:'Site scribe',s2:'Group scribe',s3:'CMT scribe / EA to CEO'}]}
+   ]},
+  {id:'s6',label:'Full Stack Global',desc:'Major international incident triggering all three tiers simultaneously. Gabon in-country responds on the ground. Perth IMT coordinates internationally. CMT handles Board, ASX, and strategic decisions.',
+   triggers:['Fatality or multiple serious injuries to travelling executive personnel','Geopolitical event requiring sovereign-level engagement and Board notification','ASX material disclosure threshold reached during an international incident'],
+   cols:[{cls:'imt-g',label:'Gabon - In-Country'},{cls:'imt-p',label:'Group IMT - Perth'},{cls:'cmt',label:'CMT'}],
+   rows:[
+     {grp:'Command / Executive',roles:[{n:'IC / CMT Chair',s1:'In-country lead',s2:'Perth IC (most senior in AUS)',s3:'CMT Chair (CEO / delegate)'},{n:'Safety Officer',s1:'In-country safety',s2:'Group HS&EM',s3:'-'},{n:'Public Information Officer',s1:'- All comms through Perth',s2:'Corporate Affairs / IR',s3:'CMT comms lead'},{n:'Liaison Officer',s1:'Embassy / DFAT in-country',s2:'Govt Relations / Legal',s3:'General Counsel'},{n:'Corporate Security & Intelligence',s1:'In-country security contact',s2:'Corporate Security (0458 458 158)',s3:'CMT security advisor'}]},
+     {grp:'CMT Executive',roles:[{n:'Chief Financial Officer',s1:'-',s2:'-',s3:'Name'},{n:'Chief People Officer',s1:'-',s2:'-',s3:'Name'},{n:'Relevant Group GM',s1:'-',s2:'-',s3:'Name'}]},
+     {grp:'General Staff',roles:[{n:'Operations Section Chief',s1:'Libreville Monitoring Centre',s2:'Group operations / Security',s3:'-'},{n:'Planning Section Chief',s1:'In-country planning',s2:'HS&EM / Executive Support',s3:'-'},{n:'Logistics Section Chief',s1:'In-country logistics / medevac',s2:'Finance / Procurement',s3:'-'}]},
+     {grp:'Support',roles:[{n:'P&C / Welfare Lead',s1:'- Through Perth',s2:'CPO / Senior P&C',s3:'-'},{n:'Scribe / Log',s1:'In-country log',s2:'EA / Governance (master log)',s3:'CMT scribe / EA to CEO'}]},
+     {grp:'Key External Contacts',roles:[{n:'DFAT Crisis Centre - 1300 555 135',s1:'-',s2:'Liaison Officer',s3:'-'},{n:'Australian Embassy Gabon',s1:'In-country contact',s2:'Perth contact',s3:'-'},{n:'Travel / Medical Assistance',s1:'In-country rep',s2:'Provider / contact number',s3:'-'}]}
+   ]}
+];
+
+// Build matrix tabs and pages
+var scTabsEl = document.getElementById('sc-tabs');
+var scPagesEl = document.getElementById('sc-pages');
+
+scenarios.forEach(function(sc, si){
+  // Tab button
+  var btn = document.createElement('button');
+  btn.className = 'sct' + (si===0?' a':'');
+  btn.textContent = sc.label;
+  btn.onclick = (function(scId, b){ return function(){ showSC(scId, b); }; })(sc.id, btn);
+  scTabsEl.appendChild(btn);
+
+  // Page
+  var page = document.createElement('div');
+  page.className = 'sp-page' + (si===0?' active':'');
+  page.id = 'sp-'+sc.id;
+
+  var colsCount = sc.cols.length;
+
+  // Build column headers
+  var thHtml = '<th style="width:28%;">Role</th>';
+  sc.cols.forEach(function(col){ thHtml += '<th class="cs '+col.cls+'">'+col.label+'</th>'; });
+
+  // Build rows
+  var rowsHtml = '';
+  sc.rows.forEach(function(row){
+    rowsHtml += '<tr class="sr"><td colspan="'+(colsCount+1)+'">'+row.grp+'</td></tr>';
+    row.roles.forEach(function(r){
+      var cells = '';
+      // Determine how many columns
+      if(colsCount===1){
+        var ph = r.s || '';
+        cells = '<td><input class="ni" placeholder="'+(ph==='-'?'':ph)+'"></td>';
+      } else if(colsCount===2){
+        var p1 = r.s1||'', p2 = r.s2||'';
+        cells = (p1==='-'?'<td><div class="cna">-</div></td>':'<td><input class="ni" placeholder="'+p1+'"></td>')
+               +(p2==='-'?'<td><div class="cna">-</div></td>':'<td><input class="ni" placeholder="'+p2+'"></td>');
+      } else {
+        var p1=r.s1||'',p2=r.s2||'',p3=r.s3||'';
+        cells = (p1==='-'?'<td><div class="cna">-</div></td>':'<td><input class="ni" placeholder="'+p1+'"></td>')
+               +(p2==='-'?'<td><div class="cna">-</div></td>':'<td><input class="ni" placeholder="'+p2+'"></td>')
+               +(p3==='-'?'<td><div class="cna">-</div></td>':'<td><input class="ni" placeholder="'+p3+'"></td>');
+      }
+      rowsHtml += '<tr><td><div class="rl">'+r.n+'</div></td>'+cells+'</tr>';
+    });
+  });
+
+  var trigHtml = sc.triggers.map(function(t){return '<li>'+t+'</li>';}).join('');
+
+  page.innerHTML = '<button class="nb-p" onclick="printSC(\''+sc.id+'\')">&#128424; Print / Save PDF</button>'
+    +'<div class="mx-pg" id="print-'+sc.id+'">'
+    +'<div class="mx-ph"><div><div class="mx-ph-title">'+sc.label+'</div><div class="mx-ph-sub">Fortescue Group HS&EM &nbsp;|&nbsp; AIIMS-Based &nbsp;|&nbsp; </div></div>'
+    +'<div class="mx-meta"><table><tr><td>Activation date:</td><td><input class="mf-inp" placeholder="dd/mm/yyyy"></td></tr><tr><td>Activation time:</td><td><input class="mf-inp" placeholder="00:00 AWST"></td></tr><tr><td>Noggin log number:</td><td><input class="mf-inp" placeholder="NNN-XXXXX"></td></tr><tr><td>IMT activated by:</td><td><input class="mf-inp" placeholder="Name / role"></td></tr></table></div>'
+    +'</div>'
+    +'<div style="font-size:12px;color:#333;background:var(--surface);border-left:3px solid #888;padding:9px 12px;border-radius:0 4px 4px 0;margin-bottom:14px;"><strong>When this applies:</strong> '+sc.desc+'</div>'
+    +'<div class="trig-box"><div class="trig-box-lbl">Activation triggers</div><ul class="blist">'+trigHtml+'</ul></div>'
+    +'<table class="mf"><thead><tr>'+thHtml+'</tr></thead><tbody>'+rowsHtml+'</tbody></table>'
+    +'<div class="nb-box"><div class="nb-lbl">Notes / Actions</div><textarea class="nb-ta" placeholder="Record key actions, decisions, or escalation triggers here..."></textarea></div>'
+    +'<div class="mx-ftr">Fortescue Group HS&EM &nbsp;|&nbsp; AIIMS-Based &nbsp;|&nbsp; Working document - not a substitute for the full Emergency Management Plan</div>'
+    +'</div>';
+
+  scPagesEl.appendChild(page);
+});
+
+function showSC(id, btn) {
+  document.querySelectorAll('.sp-page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.sct').forEach(function(t){t.classList.remove('a');});
+  document.getElementById('sp-'+id).classList.add('active');
+  btn.classList.add('a');
+}
+function printSC(id) {
+  document.querySelectorAll('.sp-page').forEach(function(p){p.classList.remove('print-target');});
+  document.getElementById('sp-'+id).classList.add('print-target');
+  window.print();
+}
+
+
+function goToLevel(s,l){
+  switchMain(null,s);
+  setTimeout(function(){
+    // Show correct level section
+    var view = document.getElementById('view-'+s);
+    if(!view) return;
+    view.querySelectorAll('.lsec').forEach(function(sec){sec.classList.remove('active');});
+    var secId = s==='pilbara' ? (l==='site'?'p-site':l==='imt'?'p-imt':'p-cmt') : (l==='monitoring'?'g-mon':l==='imt'?'g-imt':'g-cmt');
+    var sec = document.getElementById(secId);
+    if(sec) sec.classList.add('active');
+    // Update ladder active state
+    var ladder = view.querySelector('.ladder');
+    if(ladder){
+      ladder.querySelectorAll('.ls').forEach(function(ls){ls.classList.remove('a');});
+      var lsIdx = l==='site'||l==='monitoring'?0:l==='imt'?1:2;
+      var lsEls = ladder.querySelectorAll('.ls');
+      if(lsEls[lsIdx]) lsEls[lsIdx].classList.add('a');
+    }
+  },80);
+}
+function downloadRoleSheet(){
+  var m=document.getElementById('modal-content');
+  var n=m.querySelector('.modal-role-name')?m.querySelector('.modal-role-name').textContent:'Role Sheet';
+  var w=window.open('','_blank');
+  w.document.write('<html><head><title>'+n+'</title><style>body{font-family:Arial,sans-serif;font-size:12px;color:#222;padding:24px;max-width:680px;margin:0 auto}.modal-actions{display:none}.modal-role-name{font-size:20px;font-weight:700}.modal-section{margin-bottom:18px}.modal-section-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;border-bottom:1px solid #eee;padding-bottom:4px;margin-bottom:8px}.modal-list{padding-left:16px}.modal-list li{padding:2px 0;line-height:1.6}ul{color:#333}p{color:#333;line-height:1.6}</style></head><body>');
+  w.document.write(m.innerHTML);
+  w.document.write('</body></html>');
+  w.document.close();
+  setTimeout(function(){w.print();},400);
+}
+function printRoleSheet(){document.body.classList.add('mp');window.print();setTimeout(function(){document.body.classList.remove('mp');},1000);}
+
+// Set first role sheet category active on load
+document.addEventListener('DOMContentLoaded', function(){
+  var firstRct = document.querySelector('.rct');
+  if(firstRct) {
+    firstRct.style.background = firstRct.dataset.color || '#555';
+    firstRct.style.color = 'white';
+    firstRct.querySelectorAll('div').forEach(function(d){ d.style.color='white'; });
+  }
+});
+
+</script>
+
+</body>
+</html>
